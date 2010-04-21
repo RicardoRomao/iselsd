@@ -7,7 +7,6 @@ namespace Proxy
     public interface IRingServer
     {
         void Register(Guid guid, string theme, IExpert expert);
-
         void UnRegister(Guid guid, string theme, IExpert expert);
     }
 }
