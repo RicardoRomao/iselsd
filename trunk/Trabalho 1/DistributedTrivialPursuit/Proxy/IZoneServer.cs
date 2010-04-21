@@ -6,9 +6,8 @@ namespace Proxy
 {
     public interface IZoneServer
     {
-
-        void Register(String Theme, IExpert expert);
-        void UnRegister(String Theme, IExpert expert);
+        void Register(String theme, IExpert expert);
+        void UnRegister(String theme, IExpert expert);
         List<IExpert> getExpertList(String theme);
         void NotifyClientFault(String theme, IExpert expert);
     }

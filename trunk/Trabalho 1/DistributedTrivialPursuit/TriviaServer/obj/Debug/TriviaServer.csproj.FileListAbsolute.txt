@@ -1,0 +1,7 @@
+C:\ISEL\SD\Share\trunk\Trabalho 1\DistributedTrivialPursuit\TriviaServer\obj\Debug\ResolveAssemblyReference.cache
+C:\ISEL\SD\Share\trunk\Trabalho 1\DistributedTrivialPursuit\TriviaServer\bin\Debug\TriviaServer.exe
+C:\ISEL\SD\Share\trunk\Trabalho 1\DistributedTrivialPursuit\TriviaServer\bin\Debug\TriviaServer.pdb
+C:\ISEL\SD\Share\trunk\Trabalho 1\DistributedTrivialPursuit\TriviaServer\bin\Debug\Proxy.dll
+C:\ISEL\SD\Share\trunk\Trabalho 1\DistributedTrivialPursuit\TriviaServer\bin\Debug\Proxy.pdb
+C:\ISEL\SD\Share\trunk\Trabalho 1\DistributedTrivialPursuit\TriviaServer\obj\Debug\TriviaServer.exe
+C:\ISEL\SD\Share\trunk\Trabalho 1\DistributedTrivialPursuit\TriviaServer\obj\Debug\TriviaServer.pdb
