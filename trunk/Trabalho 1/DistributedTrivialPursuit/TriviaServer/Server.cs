@@ -105,6 +105,7 @@ namespace TriviaServer
                 //Safely add the expert in the corresponding list
                 _expertList[theme].Add(expert);
 
+                //Foward the registration
                 FowardRegistration(guid, theme, expert);
             }
         }
