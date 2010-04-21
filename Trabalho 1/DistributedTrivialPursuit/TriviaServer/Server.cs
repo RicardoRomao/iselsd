@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Runtime.Remoting;
+using System.Configuration;
 using Proxy;
 
 namespace TriviaServer
@@ -11,22 +13,78 @@ namespace TriviaServer
     {
         private readonly Guid _guid;
         private readonly IDictionary<String, List<IExpert>> _expertList;
-
+        private readonly NameValueCollection _serverRing;
         private IRingServer _nextServer;
+        private Int32 _nextServerIndex;
 
         public Server()
         {
             _guid = new Guid();
             _expertList = new Dictionary<String, List<IExpert>>();
-
-            SetNextServer();
+            _serverRing = ConfigurationManager.AppSettings;
+            _nextServerIndex = 0;
+            WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
+            _nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
         }
 
-        private void SetNextServer()
+        //Provavelmente estou a complicar!!! mas não me ocorreu mais nada!!!
+        private void FowardRegistration(Guid guid, String theme, IExpert expert)
         {
-            //TODO
-            //_nextServer = obter informação do appConfig
+            try
+            {
+                //First try the FastPath
+                _nextServer.Register(guid, theme, expert);
+            }
+            catch (RemotingException) {
+                bool send = false;
+                Int32 index = _nextServerIndex + 1;
+                //Must try to sent it to all servers in the list until the foward has been sent or, reaches is own id again
+                while (!send && (index % _serverRing.Count) != _nextServerIndex)
+                {
+                    WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(index));
+                    _nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
+                    try
+                    {
+                        _nextServer.Register(guid, theme, expert);
+                        send = true;
+                        _nextServerIndex = index;
+                    }
+                    catch (RemotingException) {
+                        index++;
+                    }
+                }
+            }
         }
+        private void FowardUnregistration(Guid guid, String theme, IExpert expert)
+        {
+            try
+            {
+                //First try the FastPath
+                _nextServer.UnRegister(guid, theme, expert);
+            }
+            catch (RemotingException)
+            {
+                bool send = false;
+                Int32 index = _nextServerIndex + 1;
+                //Must try to sent it to all servers in the list until the foward has been sent or, reaches is own id again
+                while (!send && (index % _serverRing.Count) != _nextServerIndex)
+                {
+                    WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(index));
+                    _nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
+                    try
+                    {
+                        _nextServer.UnRegister(guid, theme, expert);
+                        send = true;
+                        _nextServerIndex = index;
+                    }
+                    catch (RemotingException)
+                    {
+                        index++;
+                    }
+                }
+            }
+        }
+        
 
         #region IRingServer Members
 
@@ -47,17 +105,7 @@ namespace TriviaServer
                 //Safely add the expert in the corresponding list
                 _expertList[theme].Add(expert);
 
-                try
-                {
-                    //Foward the registration
-                    _nextServer.Register(guid, theme, expert);
-                }
-                catch (RemotingException)
-                {
-                    SetNextServer();
-                    if (_nextServer != null)
-                        _nextServer.Register(guid, theme, expert);
-                }
+                FowardRegistration(guid, theme, expert);
             }
         }
 
@@ -75,7 +123,7 @@ namespace TriviaServer
                     _expertList[theme].Remove(expert);
 
                 //Foward the unregistration
-                _nextServer.UnRegister(guid, theme, expert);
+                FowardUnregistration(guid, theme, expert);
             }
         }
 
@@ -97,7 +145,7 @@ namespace TriviaServer
             _expertList[theme].Add(expert);
 
             //Foward the registration
-            _nextServer.Register(_guid, theme, expert);
+            FowardRegistration(_guid, theme, expert);
         }
 
         public void UnRegister(string theme, IExpert expert)
@@ -110,7 +158,7 @@ namespace TriviaServer
                 _expertList[theme].Remove(expert);
 
             //Foward the unregistration
-            _nextServer.UnRegister(_guid, theme, expert);
+            FowardUnregistration(_guid, theme, expert);
         }
 
         public List<IExpert> getExpertList(string theme)
