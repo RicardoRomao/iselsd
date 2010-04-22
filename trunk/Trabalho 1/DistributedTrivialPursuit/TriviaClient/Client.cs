@@ -8,6 +8,9 @@ namespace TriviaClient
 {
     public class Client : MarshalByRefObject, IClient
     {
+        public event EventHandler OnQuestionAnswered;
+        public event EventHandler OnQuestionAnsweredByExpert;
+
         #region IClient Members
 
         public void ReceiveAnswer(IAsyncResult result)

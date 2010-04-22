@@ -14,7 +14,7 @@ namespace TriviaClient
 
         public string Ask(string question)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException();            
         }
 
         #endregion
