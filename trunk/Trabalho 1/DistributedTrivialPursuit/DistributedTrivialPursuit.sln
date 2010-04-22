@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proxy", "Proxy\Proxy.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TriviaServer", "TriviaServer\TriviaServer.csproj", "{CCF1FBBD-F9E6-4A84-8FE1-9BCA4886268A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TriviaClient", "TriviaClient\TriviaClient.csproj", "{F2F19356-38AB-43CF-8650-690AE92C8544}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{CCF1FBBD-F9E6-4A84-8FE1-9BCA4886268A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCF1FBBD-F9E6-4A84-8FE1-9BCA4886268A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCF1FBBD-F9E6-4A84-8FE1-9BCA4886268A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2F19356-38AB-43CF-8650-690AE92C8544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2F19356-38AB-43CF-8650-690AE92C8544}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2F19356-38AB-43CF-8650-690AE92C8544}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2F19356-38AB-43CF-8650-690AE92C8544}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

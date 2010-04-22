@@ -26,7 +26,7 @@ namespace TriviaServer
             WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
             _nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
         }
-
+                
         //Provavelmente estou a complicar!!! mas não me ocorreu mais nada!!!
         private void FowardRegistration(Guid guid, String theme, IExpert expert)
         {
@@ -121,7 +121,12 @@ namespace TriviaServer
             {
                 //Check if the theme exists in the Dictionary
                 if (_expertList.Keys.Contains(theme))
+                {
                     _expertList[theme].Remove(expert);
+                    //If there is no more experts of this theme, remove the theme
+                    if (_expertList[theme].Count == 0)
+                        _expertList.Remove(theme);
+                }
 
                 //Foward the unregistration
                 FowardUnregistration(guid, theme, expert);
@@ -156,7 +161,12 @@ namespace TriviaServer
 
             //Check if the theme exists in the Dictionary
             if (_expertList.Keys.Contains(theme))
+            {
                 _expertList[theme].Remove(expert);
+                //If there is no more experts of this theme, remove the theme
+                if (_expertList[theme].Count == 0)
+                    _expertList.Remove(theme);
+            }
 
             //Foward the unregistration
             FowardUnregistration(_guid, theme, expert);
