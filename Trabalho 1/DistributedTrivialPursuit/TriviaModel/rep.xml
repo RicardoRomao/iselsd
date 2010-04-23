@@ -1,0 +1,22 @@
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="repSquema.xsd">
+	<theme name="Desporto">
+		<card>
+			<question text="Qual o melhor clube do mundo?"/>
+			<answer text="O melhor do mundo é o Benfica!"/>
+		</card>
+		<card>
+			<question text="Qual o maior clube do mundo?"/>
+			<answer text="O maior do mundo é o Benfica!"/>
+		</card>
+		<card>
+			<question text="Quantas rodas tem uma bicicleta?"/>
+			<answer text="A bicicleta tem 2 rodas. Uma à frente e outra atrás."/>
+		</card>
+	</theme>
+	<theme name="Tecnologia">
+		<card>
+			<question text="Qual a melhor forma de evitar error num sistema distribuido?"/>
+			<answer text="Nao distribuir"/>
+		</card>
+	</theme>
+</root>
