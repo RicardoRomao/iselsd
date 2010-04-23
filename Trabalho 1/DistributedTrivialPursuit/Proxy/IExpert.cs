@@ -8,6 +8,8 @@ namespace Proxy
     {
         event EventHandler OnQuestionAnswered;
 
-        String Ask(String question);
+        String Ask(List<String> keyWords);
+        IAsyncResult BeginAsk(List<String> keyWords, Object state);
+        String EndAsk(IAsyncResult iaR);
     }
 }

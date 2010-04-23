@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Proxy
 {
-    public interface IClient
+    public interface IZoneClient
     {
         void ReceiveAnswer(IAsyncResult result);
     }

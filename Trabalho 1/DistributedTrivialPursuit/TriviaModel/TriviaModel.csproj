@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F2F19356-38AB-43CF-8650-690AE92C8544}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{93711870-C692-42C0-9FAE-D9A0DE51531E}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TriviaClient</RootNamespace>
-    <AssemblyName>TriviaClient</AssemblyName>
+    <RootNamespace>TriviaModel</RootNamespace>
+    <AssemblyName>TriviaModel</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -42,54 +42,11 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client.cs" />
-    <Compile Include="ClientApp.cs" />
-    <Compile Include="Expert.cs" />
-    <Compile Include="IClient.cs" />
+    <Compile Include="IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TriviaForm.resx">
-      <DependentUpon>TriviaForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <Compile Include="TriviaForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TriviaForm.Designer.cs">
-      <DependentUpon>TriviaForm.cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Proxy\Proxy.csproj">
-      <Project>{0DEF9E83-0FA0-4811-AB3A-546811088344}</Project>
-      <Name>Proxy</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TriviaModel\TriviaModel.csproj">
-      <Project>{93711870-C692-42C0-9FAE-D9A0DE51531E}</Project>
-      <Name>TriviaModel</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
