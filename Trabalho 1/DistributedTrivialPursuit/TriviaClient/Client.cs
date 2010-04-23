@@ -44,7 +44,7 @@ namespace TriviaClient
 
         public IExpert CreateExpert(string theme)
         {
-            IExpert expert = new Expert(this.ReceiveAnswer, theme);
+            IExpert expert = new Expert(theme);
             _themeExpert.Add(theme, expert);
             return expert;
         }
@@ -55,7 +55,8 @@ namespace TriviaClient
             IExpert temp;
             foreach (string t in themes)
             {
-                temp = new Expert(this.ReceiveAnswer, t);
+                temp = new Expert(t);
+                ret.Add(temp);
                 _themeExpert.Add(t, temp);
             }
             return ret;

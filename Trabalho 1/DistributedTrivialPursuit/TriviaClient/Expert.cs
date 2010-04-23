@@ -13,11 +13,9 @@ namespace TriviaClient
     {
         private readonly IRepository _data;
         private readonly String _theme;
-        private readonly AsyncCallback _answerCallback;
 
-        public Expert(AsyncCallback answerCallback, String theme)
+        public Expert(String theme)
         {
-            _answerCallback = answerCallback;
             _theme = theme;
             _data = null;
             //TODO: IRepository instantiation
@@ -36,10 +34,10 @@ namespace TriviaClient
         }
 
         public IAsyncResult BeginAsk(
-                    List<String> keyWords, object state)
+                    List<String> keyWords, AsyncCallback callback, object state)
         {
             return new Func<List<String>, string>(Ask).BeginInvoke(
-                keyWords, _answerCallback, state
+                keyWords, callback, state
             );
         }
 
