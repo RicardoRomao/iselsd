@@ -9,7 +9,7 @@ namespace TriviaModel
     {
         public static void Main(String[] args)
         {
-            IRepository _rep = new XMLRepository("./rep.xml");
+            IRepository _rep = XMLRepository.GetInstance("./rep.xml");
             List<String> keyWords = new List<String>();
 
             Console.WriteLine("Available themes in XML document:");

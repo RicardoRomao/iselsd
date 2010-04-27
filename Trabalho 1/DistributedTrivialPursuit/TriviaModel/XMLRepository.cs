@@ -22,9 +22,17 @@ namespace TriviaModel
     class XMLRepository : IRepository
     {
 
-        private readonly Dictionary<String, List<DataObject>> _catalog;
+        private static IRepository _current;
+        private static Dictionary<String, List<DataObject>> _catalog;
 
-        public XMLRepository(String path)
+        public static IRepository GetInstance(String path)
+        {
+            if (_current == null)
+                _current = new XMLRepository(path);
+            return _current;
+        }
+
+        private XMLRepository(String path)
         {
             _catalog = new Dictionary<string, List<DataObject>>();
 
