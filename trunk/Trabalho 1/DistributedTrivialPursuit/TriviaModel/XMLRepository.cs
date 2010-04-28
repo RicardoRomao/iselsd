@@ -19,9 +19,8 @@ namespace TriviaModel
         }
     }
 
-    class XMLRepository : IRepository
+    public class XMLRepository : IRepository
     {
-
         private static IRepository _current;
         private static Dictionary<String, List<DataObject>> _catalog;
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Proxy;
 using System.Runtime.Remoting.Messaging;
+using System.Runtime.Remoting;
 
 namespace TriviaClient
 {
@@ -18,10 +19,10 @@ namespace TriviaClient
 
         public Client()
         {
-            _server = null;
+			WellKnownClientTypeEntry[] entries = RemotingConfiguration.GetRegisteredWellKnownClientTypes();
+			_server = (IZoneServer)Activator.GetObject(entries[0].ObjectType, entries[0].ObjectUrl);
             _themeExpert = new Dictionary<string, IExpert>();
         }
-
 
         #region IClient Members
 
