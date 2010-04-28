@@ -9,8 +9,7 @@ namespace Proxy
         event EventHandler OnQuestionAnswered;
 
         String Ask(List<String> keyWords);
-        IAsyncResult BeginAsk(
-                List<String> keyWords, AsyncCallback callback, Object state);
+        IAsyncResult BeginAsk(List<String> keyWords, AsyncCallback callback, Object state);
         String EndAsk(IAsyncResult iaR);
     }
 }

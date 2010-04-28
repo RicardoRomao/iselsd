@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Runtime.Remoting;
 
 namespace TriviaClient
 {
@@ -16,20 +17,26 @@ namespace TriviaClient
         //delegate to receive the answeres given to the client
         private delegate void updClientTextBox(String msg);
 
-        private readonly Client _client = new Client();
+        private Client _client;
 
         public TriviaForm()
         {
             InitializeComponent();
             Init();
-            
         }
 
         private void Init()
         {
+			RemotingConfiguration.Configure("TriviaClient.exe.config", false);
+			_client = new Client();
             //Registering Client Events
             _client.OnQuestionAnswered += WriteAnswerToClient;
             _client.OnQuestionAnsweredByExpert += WriteAnswerByExpert;
+			_client.CreateExperts(new List<string>() { "Desporto", "Tecnologia"});
+			//Fill themes
+			cmbTheme.DataSource = _client.GetThemes();
+			_client.RegisterExpert("Desporto");
+			_client.RegisterExpert("Tecnologia");
         }
 
         //Callback to update answeres given by client Experts
@@ -39,7 +46,6 @@ namespace TriviaClient
             if (this.InvokeRequired)
             {
                 updExpertsTextBox utb = new updExpertsTextBox(updExpertAnswer);
-
                 utb.BeginInvoke(e.ToString(), null, null);
             }
             else
@@ -67,11 +73,19 @@ namespace TriviaClient
                 this.rtbClientQuestions.AppendText(e.ToString());
             }
         }
+
         //Method to update the answeres given to the client -- Thread Confinement
         private void updAnswerToClient(String msg)
         {
             this.rtbClientQuestions.AppendText(msg);
         }
-        
+
+		private void btnAsk_Click(object sender, EventArgs e)
+		{
+		}
+
+		private void btnGetExperts_Click(object sender, EventArgs e)
+		{
+		}
     }
 }

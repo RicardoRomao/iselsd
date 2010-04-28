@@ -6,7 +6,7 @@ using System.Runtime.Remoting;
 
 namespace TriviaServer
 {
-    class ServerApp
+    public class ServerApp
     {
         private static readonly String configFile = "TriviaServer.exe.config";
 

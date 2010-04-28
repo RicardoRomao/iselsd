@@ -6,6 +6,8 @@ using System.Text;
 using System.Runtime.Remoting;
 using System.Configuration;
 using Proxy;
+using System.Runtime.Remoting.Messaging;
+using System.Net.Sockets;
 
 namespace TriviaServer
 {
@@ -16,17 +18,19 @@ namespace TriviaServer
         private readonly NameValueCollection _serverRing;
         private IRingServer _nextServer;
         private Int32 _nextServerIndex;
+		private readonly object monitor;
 
         public Server()
         {
-            _guid = new Guid();
+            _guid = Guid.NewGuid();
             _expertList = new Dictionary<String, List<IExpert>>();
             _serverRing = ConfigurationManager.AppSettings;
             _nextServerIndex = 0;
             WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
             _nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
+			monitor = new object();
         }
-                
+
         //Provavelmente estou a complicar!!! mas não me ocorreu mais nada!!!
         private void FowardRegistration(Guid guid, String theme, IExpert expert)
         {
@@ -35,26 +39,21 @@ namespace TriviaServer
                 //First try the FastPath
                 _nextServer.Register(guid, theme, expert);
             }
-            catch (RemotingException) {
-                bool send = false;
-                Int32 index = _nextServerIndex + 1;
-                //Must try to sent it to all servers in the list until the foward has been sent or, reaches is own id again
-                while (!send && (index % _serverRing.Count) != _nextServerIndex)
-                {
-                    WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(index));
-                    _nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
-                    try
-                    {
-                        _nextServer.Register(guid, theme, expert);
-                        send = true;
-                        _nextServerIndex = index;
-                    }
-                    catch (RemotingException) {
-                        index++;
-                    }
-                }
+            catch (SocketException ex) {
+				_nextServerIndex = (_nextServerIndex + 1) % _serverRing.Count;
+				WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
+				_nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
+				FowardRegistration(guid, theme, expert);
             }
         }
+
+		private void EndRegistration(IAsyncResult result)
+		{
+			AsyncResult asyncResult = (AsyncResult)result;
+			var invoker = (Action<Guid, String, IExpert>)asyncResult.AsyncDelegate;
+			invoker.EndInvoke(result);
+		}
+
         private void FowardUnregistration(Guid guid, String theme, IExpert expert)
         {
             try
@@ -62,74 +61,73 @@ namespace TriviaServer
                 //First try the FastPath
                 _nextServer.UnRegister(guid, theme, expert);
             }
-            catch (RemotingException)
+            catch (SocketException ex)
             {
-                bool send = false;
-                Int32 index = _nextServerIndex + 1;
-                //Must try to sent it to all servers in the list until the foward has been sent or, reaches is own id again
-                while (!send && (index % _serverRing.Count) != _nextServerIndex)
-                {
-                    WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(index));
-                    _nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
-                    try
-                    {
-                        _nextServer.UnRegister(guid, theme, expert);
-                        send = true;
-                        _nextServerIndex = index;
-                    }
-                    catch (RemotingException)
-                    {
-                        index++;
-                    }
-                }
+				_nextServerIndex = (_nextServerIndex + 1) % _serverRing.Count;
+				WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
+				_nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
+				FowardUnregistration(guid, theme, expert);
             }
         }
-        
+
+		/*
+		 * Este método tem a mesma implementação que o EndRegistration
+		 * no entanto mantive os dois separados para o caso de futuramente
+		 * ser necessário processamento diferente
+		 */
+		private void EndUnregistration(IAsyncResult result)
+		{
+			AsyncResult asyncResult = (AsyncResult)result;
+			var invoker = (Action<Guid, String, IExpert>)asyncResult.AsyncDelegate;
+			invoker.EndInvoke(result);
+		}
 
         #region IRingServer Members
 
         public void Register(Guid guid, string theme, IExpert expert)
         {
-            //TODO
-            //Concurrency worries
-
             //Check if is the initial sender of the registration
             //If so the process ends here, if not, it must register the expert and foward the registration
             if (!_guid.Equals(guid))
             {
-                //Check if the theme exists in the Dictionary
-                //If not, create a new entrance in the dictionary
-                if (!_expertList.Keys.Contains(theme))
-                    _expertList.Add(theme, new List<IExpert>());
+				lock (monitor)
+				{
+					//Check if the theme exists in the Dictionary
+					//If not, create a new entrance in the dictionary
+					if (!_expertList.Keys.Contains(theme))
+						_expertList.Add(theme, new List<IExpert>());
 
-                //Safely add the expert in the corresponding list
-                _expertList[theme].Add(expert);
+					//Safely add the expert in the corresponding list
+					_expertList[theme].Add(expert);					
+				}
 
-                //Foward the registration
-                FowardRegistration(guid, theme, expert);
+				//Foward the registration to the other ring servers asynchronously
+				Action<Guid, string, IExpert> asyncRegister = new Action<Guid, string, IExpert>(FowardRegistration);
+				asyncRegister.BeginInvoke(guid, theme, expert, EndRegistration, null);
             }
         }
 
         public void UnRegister(Guid guid, string theme, IExpert expert)
         {
-            //TODO
-            //Concurrency worries
-
             //Check if is the initial sender of the registration
             //If so the process ends here, if not, it must unregister the expert and foward the registration
             if (!_guid.Equals(guid))
             {
-                //Check if the theme exists in the Dictionary
-                if (_expertList.Keys.Contains(theme))
-                {
-                    _expertList[theme].Remove(expert);
-                    //If there is no more experts of this theme, remove the theme
-                    if (_expertList[theme].Count == 0)
-                        _expertList.Remove(theme);
-                }
+				lock (monitor)
+				{
+					//Check if the theme exists in the Dictionary
+					if (_expertList.Keys.Contains(theme))
+					{
+						_expertList[theme].Remove(expert);
+						//If there is no more experts of this theme, remove the theme
+						if (_expertList[theme].Count == 0)
+							_expertList.Remove(theme);
+					}					
+				}
 
-                //Foward the unregistration
-                FowardUnregistration(guid, theme, expert);
+				//Foward the unregistration to the other ring servers asynchronously
+				Action<Guid, string, IExpert> asyncUnregister = new Action<Guid, string, IExpert>(FowardUnregistration);
+				asyncUnregister.BeginInvoke(guid, theme, expert, EndUnregistration, null);
             }
         }
 
@@ -139,54 +137,55 @@ namespace TriviaServer
 
         public void Register(string theme, IExpert expert)
         {
-            //TODO
-            //Concurrency worries
+			lock (monitor)
+			{
+				//Check if the theme exists in the Dictionary
+				//If not, create a new entrance in the dictionary
+				if (!_expertList.Keys.Contains(theme))
+					_expertList.Add(theme, new List<IExpert>());
 
-            //Check if the theme exists in the Dictionary
-            //If not, create a new entrance in the dictionary
-            if (!_expertList.Keys.Contains(theme))
-                _expertList.Add(theme, new List<IExpert>());
+				//Safely add the expert in the corresponding list
+				_expertList[theme].Add(expert);
+			}
 
-            //Safely add the expert in the corresponding list
-            _expertList[theme].Add(expert);
-
-            //Foward the registration
-            FowardRegistration(_guid, theme, expert);
+			//Foward the registration to the other ring servers asynchronously
+			//so the client don't have to wait
+			Action<Guid, string, IExpert> asyncRegister = new Action<Guid,string,IExpert>(FowardRegistration);
+			asyncRegister.BeginInvoke(_guid, theme, expert, EndRegistration, null);
         }
 
         public void UnRegister(string theme, IExpert expert)
         {
-            //TODO
-            //Concurrency worries
+			lock (monitor)
+			{
+				//Check if the theme exists in the Dictionary
+				if (_expertList.Keys.Contains(theme))
+				{
+					_expertList[theme].Remove(expert);
+					//If there is no more experts of this theme, remove the theme
+					if (_expertList[theme].Count == 0)
+						_expertList.Remove(theme);
+				}
+			}
 
-            //Check if the theme exists in the Dictionary
-            if (_expertList.Keys.Contains(theme))
-            {
-                _expertList[theme].Remove(expert);
-                //If there is no more experts of this theme, remove the theme
-                if (_expertList[theme].Count == 0)
-                    _expertList.Remove(theme);
-            }
-
-            //Foward the unregistration
-            FowardUnregistration(_guid, theme, expert);
+			//Foward the unregistration to the other ring servers asynchronously
+			//so the client don't have to wait
+			Action<Guid, string, IExpert> asyncUnregister = new Action<Guid, string, IExpert>(FowardUnregistration);
+			asyncUnregister.BeginInvoke(_guid, theme, expert, EndUnregistration, null);
         }
 
         public List<IExpert> getExpertList(string theme)
         {
-            //TODO
-            //Concurrency worries
-
-            if (_expertList.Keys.Contains(theme))
-                return _expertList[theme];
+			lock (monitor)
+			{
+				if (_expertList.Keys.Contains(theme))
+					return _expertList[theme];				
+			}
             return null;
         }
 
         public void NotifyClientFault(string theme, IExpert expert)
         {
-            //TODO
-            //Concurrency worries
-
             UnRegister(theme, expert);
         }
 

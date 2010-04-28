@@ -17,8 +17,7 @@ namespace TriviaClient
         public Expert(String theme)
         {
             _theme = theme;
-            _data = null;
-            //TODO: IRepository instantiation
+			_data = XMLRepository.GetInstance("./rep.xml");
         }
 
         #region IExpert Members
@@ -33,12 +32,9 @@ namespace TriviaClient
             return answer;
         }
 
-        public IAsyncResult BeginAsk(
-                    List<String> keyWords, AsyncCallback callback, object state)
+        public IAsyncResult BeginAsk(List<String> keyWords, AsyncCallback callback, object state)
         {
-            return new Func<List<String>, string>(Ask).BeginInvoke(
-                keyWords, callback, state
-            );
+            return new Func<List<String>, string>(Ask).BeginInvoke(keyWords, callback, state);
         }
 
         public string EndAsk(IAsyncResult iaR)
@@ -48,6 +44,5 @@ namespace TriviaClient
         }
 
         #endregion
-
     }
 }
