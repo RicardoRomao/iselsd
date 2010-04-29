@@ -27,8 +27,8 @@ namespace TriviaClient
         public string Ask(List<String> keyWords)
         {
             String answer = _data.GetAnswer(keyWords, _theme);
-            if (answer != null && OnQuestionAnswered.GetInvocationList() != null)
-                OnQuestionAnswered.Invoke(this, null);
+            if (!String.IsNullOrEmpty(answer) && OnQuestionAnswered != null)
+                OnQuestionAnswered(this, null);
             return answer;
         }
 

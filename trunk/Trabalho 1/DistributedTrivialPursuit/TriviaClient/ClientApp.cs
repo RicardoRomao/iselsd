@@ -16,7 +16,7 @@ namespace TriviaClient
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new TriviaForm());
+            Application.Run(new TriviaClientForm());
         }
     }
 }

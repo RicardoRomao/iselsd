@@ -28,6 +28,7 @@ namespace TriviaClient
         private void Init()
         {
 			RemotingConfiguration.Configure("TriviaClient.exe.config", false);
+			/*
 			_client = new Client();
             //Registering Client Events
             _client.OnQuestionAnswered += WriteAnswerToClient;
@@ -37,6 +38,7 @@ namespace TriviaClient
 			cmbTheme.DataSource = _client.GetThemes();
 			_client.RegisterExpert("Desporto");
 			_client.RegisterExpert("Tecnologia");
+			*/
         }
 
         //Callback to update answeres given by client Experts

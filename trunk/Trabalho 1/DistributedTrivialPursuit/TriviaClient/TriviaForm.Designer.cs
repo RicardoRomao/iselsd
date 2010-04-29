@@ -38,6 +38,7 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.rtbExpertAnswer = new System.Windows.Forms.RichTextBox();
 			this.btnGetExperts = new System.Windows.Forms.Button();
+			this.txtTheme = new System.Windows.Forms.TextBox();
 			this.SuspendLayout();
 			// 
 			// rtbClientQuestions
@@ -99,9 +100,9 @@
 			// 
 			this.cmbTheme.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cmbTheme.FormattingEnabled = true;
-			this.cmbTheme.Location = new System.Drawing.Point(12, 271);
+			this.cmbTheme.Location = new System.Drawing.Point(270, 248);
 			this.cmbTheme.Name = "cmbTheme";
-			this.cmbTheme.Size = new System.Drawing.Size(171, 21);
+			this.cmbTheme.Size = new System.Drawing.Size(23, 21);
 			this.cmbTheme.TabIndex = 6;
 			// 
 			// label4
@@ -132,11 +133,19 @@
 			this.btnGetExperts.UseVisualStyleBackColor = true;
 			this.btnGetExperts.Click += new System.EventHandler(this.btnGetExperts_Click);
 			// 
+			// txtTheme
+			// 
+			this.txtTheme.Location = new System.Drawing.Point(12, 272);
+			this.txtTheme.Name = "txtTheme";
+			this.txtTheme.Size = new System.Drawing.Size(171, 20);
+			this.txtTheme.TabIndex = 10;
+			// 
 			// TriviaForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(564, 404);
+			this.Controls.Add(this.txtTheme);
 			this.Controls.Add(this.btnGetExperts);
 			this.Controls.Add(this.rtbExpertAnswer);
 			this.Controls.Add(this.label4);
@@ -166,5 +175,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.RichTextBox rtbExpertAnswer;
 		private System.Windows.Forms.Button btnGetExperts;
+		private System.Windows.Forms.TextBox txtTheme;
     }
 }
