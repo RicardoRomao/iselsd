@@ -146,6 +146,7 @@ namespace TriviaServer
 
 				//Safely add the expert in the corresponding list
 				_expertList[theme].Add(expert);
+				Console.WriteLine("Registered expert for {0}", theme);
 			}
 
 			//Foward the registration to the other ring servers asynchronously
