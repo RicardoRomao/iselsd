@@ -20,6 +20,14 @@ namespace TriviaClient
 			_data = XMLRepository.GetInstance("./rep.xml");
         }
 
+		public String Theme
+		{
+			get
+			{
+				return _theme;
+			}
+		}
+
         #region IExpert Members
 
         public event EventHandler OnQuestionAnswered;
