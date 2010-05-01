@@ -32,19 +32,34 @@ namespace TriviaClient
 			_server = (IZoneServer)Activator.GetObject(entries[0].ObjectType, entries[0].ObjectUrl);
 			experts = new Dictionary<string, List<IExpert>>();
 			_myExperts = new List<Expert>();
+			Expert exp = new Expert("Desporto");
+			_myExperts.Add(exp);
+			exp = new Expert("Tecnologia");
+			_myExperts.Add(exp);
+
+			// Begin registering the experts
+			Action<String, IExpert> registerAction = new Action<string,IExpert>(_server.Register);
+			for (int i = 0; i < _myExperts.Count; i++)
+			{
+				// É enviado o indice do expert para no caso de registar-mos muitos experts
+				// o utilizador apenas ser informado no callback, em caso de falha, no ultimo expert
+				registerAction.BeginInvoke(_myExperts[i].Theme, _myExperts[i], OnRegisterComplete, (i+1));
+			}
+		}
+
+		private void OnRegisterComplete(IAsyncResult resp) {
+			AsyncResult res = (AsyncResult)resp;
+			Action<String, IExpert> registerAction = (Action<String, IExpert>)res.AsyncDelegate;
 			try
 			{
-				Expert exp = new Expert("Desporto");
-				_myExperts.Add(exp);
-				_server.Register("Desporto", exp);
-				exp = new Expert("Tecnologia");
-				_myExperts.Add(exp);
-				_server.Register("Tecnologia", exp);
+				registerAction.EndInvoke(resp);
 			}
 			catch (SocketException ex)
 			{
-				MessageBox.Show("Zone Server Unavailable", "Trivia Client", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				_myExperts.Clear();
+				if ((int)resp.AsyncState == _myExperts.Count)
+				{
+					MessageBox.Show("Zone Server Unavailable\nRegister Failed", "Trivia Client", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				}
 			}
 		}
 
@@ -56,10 +71,18 @@ namespace TriviaClient
 			{
 				List<IExpert> peritos = del.EndInvoke(resp);
 				experts.Add((String)resp.AsyncState, peritos);
+				// Está escrito na pedra, actualizações nos controlos apenas
+				// na thread criadora
+				this.Invoke(new MethodInvoker(delegate() {
+					txtQuestion.Enabled = true;
+					btnAsk.Enabled = true;
+					if (!lstThemes.Items.Contains(resp.AsyncState))
+						lstThemes.Items.Add((String)resp.AsyncState);
+				}));
 			}
-			catch (Exception ex)
+			catch (SocketException ex)
 			{
-				MessageBox.Show("Zone Server Unavailable", "Trivia Client", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				MessageBox.Show("Zone Server Unavailable\nCan't get experts", "Trivia Client", MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 		}
 

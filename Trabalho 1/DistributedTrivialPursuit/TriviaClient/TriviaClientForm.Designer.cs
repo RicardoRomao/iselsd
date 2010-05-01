@@ -38,6 +38,7 @@
 			this.txtQuestion = new System.Windows.Forms.TextBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.btnAsk = new System.Windows.Forms.Button();
+			this.lstThemes = new System.Windows.Forms.ListBox();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -105,7 +106,7 @@
 			// txtQuestion
 			// 
 			this.txtQuestion.Enabled = false;
-			this.txtQuestion.Location = new System.Drawing.Point(12, 373);
+			this.txtQuestion.Location = new System.Drawing.Point(12, 435);
 			this.txtQuestion.Name = "txtQuestion";
 			this.txtQuestion.Size = new System.Drawing.Size(260, 20);
 			this.txtQuestion.TabIndex = 7;
@@ -113,7 +114,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(12, 357);
+			this.label4.Location = new System.Drawing.Point(12, 419);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(49, 13);
 			this.label4.TabIndex = 8;
@@ -122,18 +123,27 @@
 			// btnAsk
 			// 
 			this.btnAsk.Enabled = false;
-			this.btnAsk.Location = new System.Drawing.Point(278, 371);
+			this.btnAsk.Location = new System.Drawing.Point(278, 433);
 			this.btnAsk.Name = "btnAsk";
 			this.btnAsk.Size = new System.Drawing.Size(75, 23);
 			this.btnAsk.TabIndex = 9;
 			this.btnAsk.Text = "Ask";
 			this.btnAsk.UseVisualStyleBackColor = true;
 			// 
+			// lstThemes
+			// 
+			this.lstThemes.FormattingEnabled = true;
+			this.lstThemes.Location = new System.Drawing.Point(12, 351);
+			this.lstThemes.Name = "lstThemes";
+			this.lstThemes.Size = new System.Drawing.Size(260, 56);
+			this.lstThemes.TabIndex = 10;
+			// 
 			// TriviaClientForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(478, 402);
+			this.ClientSize = new System.Drawing.Size(478, 468);
+			this.Controls.Add(this.lstThemes);
 			this.Controls.Add(this.btnAsk);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.txtQuestion);
@@ -163,5 +173,6 @@
 		private System.Windows.Forms.TextBox txtQuestion;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Button btnAsk;
+		private System.Windows.Forms.ListBox lstThemes;
 	}
 }
