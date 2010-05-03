@@ -30,13 +30,13 @@ namespace TriviaClient
 
         #region IExpert Members
 
-        public event EventHandler OnQuestionAnswered;
+		public event QuestionHandler OnQuestionAnswered;
 
         public string Ask(List<String> keyWords)
         {
             String answer = _data.GetAnswer(keyWords, _theme);
             if (!String.IsNullOrEmpty(answer) && OnQuestionAnswered != null)
-                OnQuestionAnswered(this, null);
+				OnQuestionAnswered(this, String.Format("{0}: {1}", _theme, answer));
             return answer;
         }
 

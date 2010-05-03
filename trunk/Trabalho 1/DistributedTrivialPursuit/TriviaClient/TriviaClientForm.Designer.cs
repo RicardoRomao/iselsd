@@ -129,6 +129,7 @@
 			this.btnAsk.TabIndex = 9;
 			this.btnAsk.Text = "Ask";
 			this.btnAsk.UseVisualStyleBackColor = true;
+			this.btnAsk.Click += new System.EventHandler(this.btnAsk_Click);
 			// 
 			// lstThemes
 			// 
