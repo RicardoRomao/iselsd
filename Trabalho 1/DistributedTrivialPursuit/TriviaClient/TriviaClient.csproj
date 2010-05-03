@@ -78,6 +78,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="QuestionState.cs" />
     <Compile Include="TriviaClientForm.cs">
       <SubType>Form</SubType>
     </Compile>
