@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Client.cs" />
     <Compile Include="ClientApp.cs" />
+    <Compile Include="ClientClass.cs" />
     <Compile Include="Expert.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

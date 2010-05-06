@@ -52,7 +52,12 @@ namespace TriviaClient
 
 		private void OnExpertQuestionAnswered(IExpert sender, String answer)
 		{
-			rtbAnswers.AppendText(answer);
+			if (this.InvokeRequired)
+			{
+				this.Invoke(new MethodInvoker(delegate() {
+					rtbAnswers.AppendText(answer);
+				}));
+			}
 		}
 
 		private void OnRegisterComplete(IAsyncResult resp) {
@@ -78,15 +83,23 @@ namespace TriviaClient
 			try
 			{
 				List<IExpert> peritos = del.EndInvoke(resp);
-				experts.Add((String)resp.AsyncState, peritos);
-				// Está escrito na pedra, actualizações nos controlos apenas
-				// na thread criadora
-				this.Invoke(new MethodInvoker(delegate() {
-					txtQuestion.Enabled = true;
-					btnAsk.Enabled = true;
-					if (!lstThemes.Items.Contains(resp.AsyncState))
-						lstThemes.Items.Add((String)resp.AsyncState);
-				}));
+				if (peritos != null && peritos.Count > 0)
+				{
+					experts.Add((String)resp.AsyncState, peritos);
+					// Está escrito na pedra, actualizações nos controlos apenas
+					// na thread criadora
+					this.Invoke(new MethodInvoker(delegate()
+					{
+						txtQuestion.Enabled = true;
+						btnAsk.Enabled = true;
+						if (!lstThemes.Items.Contains(resp.AsyncState))
+							lstThemes.Items.Add((String)resp.AsyncState);
+					}));
+				}
+				else
+				{
+					MessageBox.Show("Experts unavailable for that theme", "Trivia Client", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				}
 			}
 			catch (SocketException ex)
 			{
@@ -109,7 +122,7 @@ namespace TriviaClient
 			}
 			catch (SocketException ex)
 			{
-				new Action<String, IExpert>(_server.NotifyClientFault).BeginInvoke(state.Theme, state.Expert, null, null);
+				new Action<String, IExpert>(_server.NotifyClientFault).BeginInvoke(state.Theme, state.Expert, OnNotifyComplete, null);
 			}
 		}
 
@@ -135,6 +148,7 @@ namespace TriviaClient
 
 		private void btnAsk_Click(object sender, EventArgs e)
 		{
+			// client.Ask(keywords);
 			List<IExpert> geniuses = experts[lstThemes.SelectedItem.ToString()];
 			_nrQuestions++;
 			rtbQuestions.AppendText(String.Format("Question {0}: {1}", _nrQuestions.ToString(), txtQuestion.Text));
