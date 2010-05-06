@@ -15,10 +15,7 @@ namespace TriviaClient
 {
 	public partial class TriviaClientForm : Form
 	{
-		private IZoneServer _server;
-		private List<Expert> _myExperts;
-		private Dictionary<String, List<IExpert>> experts;
-		private int _nrQuestions;
+		private ClientClass _client;
 
 		public TriviaClientForm()
 		{
@@ -28,136 +25,70 @@ namespace TriviaClient
 
 		private void InitRemote()
 		{
-			RemotingConfiguration.Configure("TriviaClient.exe.config", false);
-			WellKnownClientTypeEntry[] entries = RemotingConfiguration.GetRegisteredWellKnownClientTypes();
-			_server = (IZoneServer)Activator.GetObject(entries[0].ObjectType, entries[0].ObjectUrl);
-			experts = new Dictionary<string, List<IExpert>>();
-			_myExperts = new List<Expert>();
-			Expert exp = new Expert("Desporto");
-			exp.OnQuestionAnswered += OnExpertQuestionAnswered;
-			_myExperts.Add(exp);
-			exp = new Expert("Tecnologia");
-			exp.OnQuestionAnswered += OnExpertQuestionAnswered;
-			_myExperts.Add(exp);
+			_client = new ClientClass("TriviaClient.exe.config");
+			_client.OnError += OnError;
+			_client.OnExpertsGetComplete += OnExpertsReceived;
+			_client.OnAnswerReceived += OnQuestionAnswered;
+			_client.AddExpert("Desporto");
+			_client.AddExpert("Tecnologia");
+			_client.OnQuestionAnswered += OnExpertQuestionAnswered;
+			_client.RegisterAll();
+		}
 
-			// Begin registering the experts
-			Action<String, IExpert> registerAction = new Action<string,IExpert>(_server.Register);
-			for (int i = 0; i < _myExperts.Count; i++)
-			{
-				// É enviado o indice do expert para no caso de registar-mos muitos experts
-				// o utilizador apenas ser informado no callback, em caso de falha, no ultimo expert
-				registerAction.BeginInvoke(_myExperts[i].Theme, _myExperts[i], OnRegisterComplete, (i+1));
-			}
+		private void OnError(String message)
+		{
+			MessageBox.Show(message, "Trivia Client", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
 		private void OnExpertQuestionAnswered(IExpert sender, String answer)
 		{
-			if (this.InvokeRequired)
+			this.Invoke(new MethodInvoker(delegate()
 			{
-				this.Invoke(new MethodInvoker(delegate() {
-					rtbAnswers.AppendText(answer);
-				}));
-			}
+				rtbAnswers.AppendText(answer);
+			}));
 		}
 
-		private void OnRegisterComplete(IAsyncResult resp) {
-			AsyncResult res = (AsyncResult)resp;
-			Action<String, IExpert> registerAction = (Action<String, IExpert>)res.AsyncDelegate;
-			try
-			{
-				registerAction.EndInvoke(resp);
-			}
-			catch (SocketException ex)
-			{
-				if ((int)resp.AsyncState == _myExperts.Count)
-				{
-					MessageBox.Show("Zone Server Unavailable\nRegister Failed", "Trivia Client", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				}
-			}
-		}
-
-		private void OnExpertsReceived(IAsyncResult resp)
+		private void OnExpertsReceived(String theme)
 		{
-			AsyncResult res = (AsyncResult)resp;
-			Func<String, List<IExpert>> del = (Func<String, List<IExpert>>)res.AsyncDelegate;
-			try
+			this.Invoke(new MethodInvoker(delegate()
 			{
-				List<IExpert> peritos = del.EndInvoke(resp);
-				if (peritos != null && peritos.Count > 0)
+				txtTheme.Text = "";
+				txtTheme.Enabled = true;
+				btnGetTheme.Enabled = true;
+				txtQuestion.Enabled = true;
+				btnAsk.Enabled = true;
+				if (String.IsNullOrEmpty(theme))
 				{
-					experts.Add((String)resp.AsyncState, peritos);
-					// Está escrito na pedra, actualizações nos controlos apenas
-					// na thread criadora
-					this.Invoke(new MethodInvoker(delegate()
-					{
-						txtQuestion.Enabled = true;
-						btnAsk.Enabled = true;
-						if (!lstThemes.Items.Contains(resp.AsyncState))
-							lstThemes.Items.Add((String)resp.AsyncState);
-					}));
+					MessageBox.Show(String.Format("Experts unavailable for theme {0}", theme), "Trivia Client", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				}
 				else
 				{
-					MessageBox.Show("Experts unavailable for that theme", "Trivia Client", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					if (!lstThemes.Items.Contains(theme))
+						lstThemes.Items.Add(theme);
 				}
-			}
-			catch (SocketException ex)
-			{
-				MessageBox.Show("Zone Server Unavailable\nCan't get experts", "Trivia Client", MessageBoxButtons.OK, MessageBoxIcon.Information);
-			}
+			}));
 		}
 
-		private void OnQuestionAnswered(IAsyncResult resp)
+		private void OnQuestionAnswered(int questionNumber, String answer)
 		{
-			AsyncResult res = (AsyncResult)resp;
-			Func<List<String>, String> askQuestion = (Func<List<String>, String>)res.AsyncDelegate;
-			QuestionState state = null;
-			try
+			this.Invoke(new MethodInvoker(delegate()
 			{
-				String answer = askQuestion.EndInvoke(resp);
-				state = (QuestionState)resp.AsyncState;
-				this.Invoke(new MethodInvoker(delegate() {
-					rtbQuestions.AppendText(String.Format("{0}: {1}\n", state.Index, answer));
-				}));
-			}
-			catch (SocketException ex)
-			{
-				new Action<String, IExpert>(_server.NotifyClientFault).BeginInvoke(state.Theme, state.Expert, OnNotifyComplete, null);
-			}
-		}
-
-		private void OnNotifyComplete(IAsyncResult resp)
-		{
-			AsyncResult res = (AsyncResult)resp;
-			Action<String, IExpert> notifyCall = (Action<String, IExpert>)res.AsyncDelegate;
-			try
-			{
-				notifyCall.EndInvoke(resp);
-			}
-			catch (SocketException ex)
-			{
-				MessageBox.Show("Zone Server Unavailable\nCan't notify zone server", "Trivia Client", MessageBoxButtons.OK, MessageBoxIcon.Information);
-			}
+				rtbQuestions.AppendText(String.Format("{0}: {1}\n", questionNumber, answer));
+			}));
 		}
 
 		private void btnGetTheme_Click(object sender, EventArgs e)
 		{
-			Func<String, List<IExpert>> getThemeExperts = new Func<string, List<IExpert>>(_server.getExpertList);
-			getThemeExperts.BeginInvoke(txtTheme.Text, OnExpertsReceived, txtTheme.Text);
+			btnGetTheme.Enabled = false;
+			txtTheme.Enabled = false;
+			_client.GetExperts(txtTheme.Text);
 		}
 
 		private void btnAsk_Click(object sender, EventArgs e)
 		{
-			// client.Ask(keywords);
-			List<IExpert> geniuses = experts[lstThemes.SelectedItem.ToString()];
-			_nrQuestions++;
-			rtbQuestions.AppendText(String.Format("Question {0}: {1}", _nrQuestions.ToString(), txtQuestion.Text));
-			List<String> keywords = new List<String>(txtQuestion.Text.Split(new char[]{','}, StringSplitOptions.RemoveEmptyEntries));
-			foreach (IExpert perito in geniuses)
-			{
-				Func<List<String>, String> askQuestion = new Func<List<String>, String>(perito.Ask);
-				askQuestion.BeginInvoke(keywords, OnQuestionAnswered, new QuestionState() { Index = _nrQuestions.ToString(), Theme = lstThemes.SelectedItem.ToString(), Expert = perito });
-			}
+			rtbQuestions.AppendText(String.Format("Question {0}\n", txtQuestion.Text));
+			List<String> keywords = new List<String>(txtQuestion.Text.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
+			_client.Ask(lstThemes.SelectedItem.ToString(), keywords);
 		}
 	}
 }
