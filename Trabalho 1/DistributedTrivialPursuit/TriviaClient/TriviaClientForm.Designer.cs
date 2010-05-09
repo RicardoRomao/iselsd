@@ -157,6 +157,7 @@
 			this.Controls.Add(this.label1);
 			this.Name = "TriviaClientForm";
 			this.Text = "TriviaClientForm";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TriviaClientForm_OnClosing);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
