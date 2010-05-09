@@ -7,9 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Runtime.Remoting;
+using System.Configuration;
 using Proxy;
 using System.Net.Sockets;
 using System.Runtime.Remoting.Messaging;
+using TriviaModel;
 
 namespace TriviaClient
 {
@@ -29,8 +31,12 @@ namespace TriviaClient
 			_client.OnError += OnError;
 			_client.OnExpertsGetComplete += OnExpertsReceived;
 			_client.OnAnswerReceived += OnQuestionAnswered;
-			_client.AddExpert("Desporto");
-			_client.AddExpert("Tecnologia");
+			IRepository xrep = XMLRepository.GetInstance(ConfigurationManager.AppSettings["DataSource"]);
+			List<String> themes = xrep.GetThemes();
+			foreach (string theme in themes)
+			{
+				_client.AddExpert(theme);
+			}
 			_client.OnQuestionAnswered += OnExpertQuestionAnswered;
 			_client.RegisterAll();
 		}
@@ -44,7 +50,7 @@ namespace TriviaClient
 		{
 			this.Invoke(new MethodInvoker(delegate()
 			{
-				rtbAnswers.AppendText(answer);
+				rtbAnswers.AppendText(String.Format("{0}\n", answer));
 			}));
 		}
 
@@ -55,14 +61,14 @@ namespace TriviaClient
 				txtTheme.Text = "";
 				txtTheme.Enabled = true;
 				btnGetTheme.Enabled = true;
-				txtQuestion.Enabled = true;
-				btnAsk.Enabled = true;
 				if (String.IsNullOrEmpty(theme))
 				{
 					MessageBox.Show(String.Format("Experts unavailable for theme {0}", theme), "Trivia Client", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				}
 				else
 				{
+					txtQuestion.Enabled = true;
+					btnAsk.Enabled = true;
 					if (!lstThemes.Items.Contains(theme))
 						lstThemes.Items.Add(theme);
 				}
@@ -89,6 +95,12 @@ namespace TriviaClient
 			rtbQuestions.AppendText(String.Format("Question {0}\n", txtQuestion.Text));
 			List<String> keywords = new List<String>(txtQuestion.Text.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
 			_client.Ask(lstThemes.SelectedItem.ToString(), keywords);
+			txtQuestion.Text = "";
+		}
+
+		private void TriviaClientForm_OnClosing(object sender, FormClosingEventArgs e)
+		{
+			_client.UnregisterAll();
 		}
 	}
 }

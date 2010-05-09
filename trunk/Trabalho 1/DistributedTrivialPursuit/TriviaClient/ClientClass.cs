@@ -6,6 +6,7 @@ using System.Runtime.Remoting;
 using Proxy;
 using System.Runtime.Remoting.Messaging;
 using System.Net.Sockets;
+using System.Runtime.Remoting.Lifetime;
 
 namespace TriviaClient
 {
@@ -184,6 +185,36 @@ namespace TriviaClient
 			{
 				Func<List<String>, String> askQuestion = new Func<List<String>, String>(perito.Ask);
 				askQuestion.BeginInvoke(keywords, OnAskEnd, new QuestionState() { Index = _nrQuestions.ToString(), Theme = theme, Expert = perito });
+			}
+		}
+
+		private void OnUnregisterComplete(IAsyncResult resp)
+		{
+			AsyncResult res = (AsyncResult)resp;
+			Action<String, IExpert> unregisterAction = (Action<String, IExpert>)res.AsyncDelegate;
+			try
+			{
+				unregisterAction.EndInvoke(resp);
+			}
+			catch (SocketException ex)
+			{
+				if (OnError != null)
+				{
+					OnError(String.Format("Unregister failed for theme {0}.", (String)resp.AsyncState));
+				}
+			}
+		}
+
+		public void UnregisterAll()
+		{
+			lock (monitor)
+			{
+				foreach (Expert expert in _myExperts)
+				{
+					Action<String, IExpert> unregister = new Action<string, IExpert>(_server.UnRegister);
+					unregister.BeginInvoke(expert.Theme, expert, OnUnregisterComplete, null);
+				}
+				_myExperts.Clear();
 			}
 		}
 	}
