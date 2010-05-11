@@ -51,7 +51,6 @@
   <ItemGroup>
     <Compile Include="Client.cs" />
     <Compile Include="ClientApp.cs" />
-    <Compile Include="ClientClass.cs" />
     <Compile Include="Expert.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -62,9 +61,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TriviaClientForm.resx">
       <DependentUpon>TriviaClientForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TriviaForm.resx">
-      <DependentUpon>TriviaForm.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -87,13 +83,6 @@
     <Compile Include="TriviaClientForm.Designer.cs">
       <DependentUpon>TriviaClientForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="TriviaForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TriviaForm.Designer.cs">
-      <DependentUpon>TriviaForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TriviaSponsor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Proxy\Proxy.csproj">

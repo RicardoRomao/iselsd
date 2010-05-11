@@ -17,7 +17,7 @@ namespace TriviaClient
 {
 	public partial class TriviaClientForm : Form
 	{
-		private ClientClass _client;
+		private Client _client;
 
 		public TriviaClientForm()
 		{
@@ -27,7 +27,7 @@ namespace TriviaClient
 
 		private void InitRemote()
 		{
-			_client = new ClientClass("TriviaClient.exe.config");
+			_client = new Client();
 			_client.OnError += OnError;
 			_client.OnExpertsGetComplete += OnExpertsReceived;
 			_client.OnAnswerReceived += OnQuestionAnswered;

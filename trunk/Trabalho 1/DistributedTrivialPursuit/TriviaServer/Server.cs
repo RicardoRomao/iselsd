@@ -19,20 +19,24 @@ namespace TriviaServer
         private readonly NameValueCollection _serverRing;
         private IRingServer _nextServer;
         private Int32 _nextServerIndex;
-		private readonly object monitor;
+
+        private readonly string configFile = ConfigurationManager.AppSettings["serverConfigFile"];
+		private readonly object monitor = new Object();
 
         public Server()
         {
             _guid = Guid.NewGuid();
+            _nextServerIndex = 0;
+
             _expertList = new Dictionary<String, List<IExpert>>();
             _serverRing = ConfigurationManager.AppSettings;
-            _nextServerIndex = 0;
+
+            RemotingConfiguration.Configure(configFile, false);
             WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
             _nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
             ITriviaSponsor sponsor = _nextServer.getSponsor();
             ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_nextServer);
             lease.Register(sponsor);
-			monitor = new object();
         }
 
         private void FowardRegistration(Guid guid, String theme, IExpert expert)
