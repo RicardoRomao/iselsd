@@ -29,7 +29,7 @@ namespace TriviaServer
             _nextServerIndex = 0;
 
             _expertList = new Dictionary<String, List<IExpert>>();
-            _serverRing = ConfigurationManager.AppSettings;
+            _serverRing = (NameValueCollection)ConfigurationManager.GetSection("RingServers");
 
             RemotingConfiguration.Configure(configFile, false);
             WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
