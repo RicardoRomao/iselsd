@@ -51,7 +51,6 @@
   <ItemGroup>
     <Compile Include="Client.cs" />
     <Compile Include="ClientApp.cs" />
-    <Compile Include="Expert.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -88,6 +87,10 @@
     <ProjectReference Include="..\Proxy\Proxy.csproj">
       <Project>{0DEF9E83-0FA0-4811-AB3A-546811088344}</Project>
       <Name>Proxy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TriviaExpert\TriviaExpert.csproj">
+      <Project>{B1F4BFF3-0D30-4181-AA47-7382DF25BCE8}</Project>
+      <Name>TriviaExpert</Name>
     </ProjectReference>
     <ProjectReference Include="..\TriviaModel\TriviaModel.csproj">
       <Project>{93711870-C692-42C0-9FAE-D9A0DE51531E}</Project>
