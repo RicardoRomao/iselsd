@@ -8,5 +8,6 @@ namespace Proxy
     {
         void Register(Guid guid, string theme, IExpert expert);
         void UnRegister(Guid guid, string theme, IExpert expert);
+        ITriviaSponsor getSponsor();
     }
 }

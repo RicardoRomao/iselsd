@@ -8,6 +8,7 @@ using System.Configuration;
 using Proxy;
 using System.Runtime.Remoting.Messaging;
 using System.Net.Sockets;
+using System.Runtime.Remoting.Lifetime;
 
 namespace TriviaServer
 {
@@ -28,10 +29,12 @@ namespace TriviaServer
             _nextServerIndex = 0;
             WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
             _nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
+            ITriviaSponsor sponsor = _nextServer.getSponsor();
+            ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_nextServer);
+            lease.Register(sponsor);
 			monitor = new object();
         }
 
-        //Provavelmente estou a complicar!!! mas não me ocorreu mais nada!!!
         private void FowardRegistration(Guid guid, String theme, IExpert expert)
         {
             try
@@ -43,6 +46,9 @@ namespace TriviaServer
 				_nextServerIndex = (_nextServerIndex + 1) % _serverRing.Count;
 				WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
 				_nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
+                ITriviaSponsor sponsor = _nextServer.getSponsor();
+                ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_nextServer);
+                lease.Register(sponsor);
 				FowardRegistration(guid, theme, expert);
             }
         }
@@ -66,6 +72,9 @@ namespace TriviaServer
 				_nextServerIndex = (_nextServerIndex + 1) % _serverRing.Count;
 				WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
 				_nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
+                ITriviaSponsor sponsor = _nextServer.getSponsor();
+                ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_nextServer);
+                lease.Register(sponsor);
 				FowardUnregistration(guid, theme, expert);
             }
         }
@@ -188,6 +197,22 @@ namespace TriviaServer
         public void NotifyClientFault(string theme, IExpert expert)
         {
             UnRegister(theme, expert);
+        }
+
+        public ITriviaSponsor getSponsor()
+        {
+            return new TriviaSponsor();
+        }
+
+        public override object InitializeLifetimeService()
+        {
+            ILease lease = (ILease)base.InitializeLifetimeService();
+            if (lease.CurrentState == LeaseState.Initial)
+            {
+                lease.InitialLeaseTime = lease.RenewOnCallTime = TimeSpan.FromSeconds(30);
+            }
+            return lease;
+
         }
 
         #endregion

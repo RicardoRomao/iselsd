@@ -93,6 +93,7 @@
     <Compile Include="TriviaForm.Designer.cs">
       <DependentUpon>TriviaForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="TriviaSponsor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Proxy\Proxy.csproj">

@@ -33,7 +33,10 @@ namespace TriviaClient
 			_config = config;
 			RemotingConfiguration.Configure(_config, false);
 			WellKnownClientTypeEntry[] entries = RemotingConfiguration.GetRegisteredWellKnownClientTypes();
-			_server = (IZoneServer)Activator.GetObject(entries[0].ObjectType, entries[0].ObjectUrl);
+			_server = (IZoneServer)Activator.GetObject(entries[0].ObjectType, entries[0].ObjectUrl);            
+            ITriviaSponsor sponsor = _server.getSponsor();
+            ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_server);
+            lease.Register(sponsor);
 			_nrQuestions = 0;
 		}
 
