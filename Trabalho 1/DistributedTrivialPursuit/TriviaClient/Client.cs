@@ -7,7 +7,6 @@ using Proxy;
 using System.Runtime.Remoting.Messaging;
 using System.Net.Sockets;
 using System.Runtime.Remoting.Lifetime;
-using System.Configuration;
 
 namespace TriviaClient
 {
@@ -22,23 +21,25 @@ namespace TriviaClient
 		public event ThemeHandler OnExpertsGetComplete;
 		public event ResponseHandler OnAnswerReceived;
 
-        private readonly string configFile = ConfigurationManager.AppSettings["clientConfigFile"];
 		private readonly object monitor = new object();
 		private readonly IZoneServer _server;
-		private readonly String _config;
 		private List<Expert> _myExperts;
 		private Dictionary<String, List<IExpert>> _ringExperts;
 		private int _nrQuestions;
 
 		public Client()
 		{
-            RemotingConfiguration.Configure(configFile, false);
 			WellKnownClientTypeEntry[] entries = RemotingConfiguration.GetRegisteredWellKnownClientTypes();
-			_server = (IZoneServer)Activator.GetObject(entries[0].ObjectType, entries[0].ObjectUrl);            
-            ITriviaSponsor sponsor = _server.getSponsor();
-            ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_server);
-            lease.Register(sponsor);
-			_nrQuestions = 0;
+			_server = (IZoneServer)Activator.GetObject(
+                entries.Single(t => t.ObjectType.Equals(typeof(IZoneServer))).ObjectType,
+                entries.Single(t => t.ObjectType.Equals(typeof(IZoneServer))).ObjectUrl);
+                //entries[0].ObjectType, entries[0].ObjectUrl);
+
+            //ITriviaSponsor sponsor = _server.getSponsor();
+            //ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_server);
+            //lease.Register(sponsor);
+			
+            _nrQuestions = 0;
 		}
 
 		public void AddExpert(String theme)
@@ -88,8 +89,8 @@ namespace TriviaClient
 				Action<String, IExpert> registerAction = new Action<string, IExpert>(_server.Register);
 				foreach (Expert expert in _myExperts)
 				{
-					registerAction.BeginInvoke(expert.Theme, expert, OnRegisterComplete, expert.Theme);
-				}
+                    registerAction.BeginInvoke(expert.Theme, expert, OnRegisterComplete, expert.Theme);
+                }
 			}
 		}
 

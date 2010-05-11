@@ -31,13 +31,16 @@ namespace TriviaClient
 			_client.OnError += OnError;
 			_client.OnExpertsGetComplete += OnExpertsReceived;
 			_client.OnAnswerReceived += OnQuestionAnswered;
-			IRepository xrep = XMLRepository.GetInstance(ConfigurationManager.AppSettings["DataSource"]);
+			
+            IRepository xrep = XMLRepository.GetInstance(ConfigurationManager.AppSettings["DataSource"]);
 			List<String> themes = xrep.GetThemes();
-			foreach (string theme in themes)
+			
+            foreach (string theme in themes)
 			{
 				_client.AddExpert(theme);
 			}
-			_client.OnQuestionAnswered += OnExpertQuestionAnswered;
+			
+            _client.OnQuestionAnswered += OnExpertQuestionAnswered;
 			_client.RegisterAll();
 		}
 

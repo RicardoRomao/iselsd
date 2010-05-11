@@ -4,11 +4,11 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Runtime.Remoting;
-using System.Configuration;
 using Proxy;
 using System.Runtime.Remoting.Messaging;
 using System.Net.Sockets;
 using System.Runtime.Remoting.Lifetime;
+using System.Configuration;
 
 namespace TriviaServer
 {
@@ -20,7 +20,6 @@ namespace TriviaServer
         private IRingServer _nextServer;
         private Int32 _nextServerIndex;
 
-        private readonly string configFile = ConfigurationManager.AppSettings["serverConfigFile"];
 		private readonly object monitor = new Object();
 
         public Server()
@@ -31,12 +30,12 @@ namespace TriviaServer
             _expertList = new Dictionary<String, List<IExpert>>();
             _serverRing = (NameValueCollection)ConfigurationManager.GetSection("RingServers");
 
-            RemotingConfiguration.Configure(configFile, false);
             WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
             _nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
-            ITriviaSponsor sponsor = _nextServer.getSponsor();
-            ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_nextServer);
-            lease.Register(sponsor);
+
+            //ITriviaSponsor sponsor = _nextServer.getSponsor();
+            //ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_nextServer);
+            //lease.Register(sponsor);
         }
 
         private void FowardRegistration(Guid guid, String theme, IExpert expert)
