@@ -6,6 +6,7 @@ using Proxy;
 using TriviaModel;
 using System.Threading;
 using System.Runtime.Remoting.Messaging;
+using System.Configuration;
 
 namespace TriviaClient
 {
@@ -17,7 +18,7 @@ namespace TriviaClient
         public Expert(String theme)
         {
             _theme = theme;
-			_data = XMLRepository.GetInstance("./rep.xml");
+            _data = XMLRepository.GetInstance(ConfigurationManager.AppSettings["DataSource"]);
         }
 
 		public String Theme
