@@ -49,6 +49,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="ServerApp.cs" />
+    <Compile Include="TriviaSponsor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Proxy\Proxy.csproj">

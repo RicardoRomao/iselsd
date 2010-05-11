@@ -10,5 +10,6 @@ namespace Proxy
         void UnRegister(String theme, IExpert expert);
         List<IExpert> getExpertList(String theme);
         void NotifyClientFault(String theme, IExpert expert);
+        ITriviaSponsor getSponsor();
     }
 }
