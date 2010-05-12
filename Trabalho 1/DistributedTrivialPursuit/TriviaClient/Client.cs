@@ -26,6 +26,7 @@ namespace TriviaClient
 		private List<Expert> _myExperts;
 		private Dictionary<String, List<IExpert>> _ringExperts;
 		private int _nrQuestions;
+        private ITriviaSponsor _sponsor;
 
 		public Client()
 		{
@@ -34,13 +35,59 @@ namespace TriviaClient
                 entries.Single(t => t.ObjectType.Equals(typeof(IZoneServer))).ObjectType,
                 entries.Single(t => t.ObjectType.Equals(typeof(IZoneServer))).ObjectUrl);
                 //entries[0].ObjectType, entries[0].ObjectUrl);
-
-            //ITriviaSponsor sponsor = _server.getSponsor();
-            //ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_server);
-            //lease.Register(sponsor);
-			
             _nrQuestions = 0;
+            SetSponsor();
 		}
+
+        private void SetSponsor()
+        {
+            Func<ITriviaSponsor> setSponsor = new Func<ITriviaSponsor>(_server.getSponsor);
+            setSponsor.BeginInvoke(OnSetSponsorComplete, null);
+        }
+
+        private void OnSetSponsorComplete(IAsyncResult resp)
+        {
+            AsyncResult res = (AsyncResult)resp;            
+            
+            Func<ITriviaSponsor> setSponsorAction = (Func<ITriviaSponsor>)res.AsyncDelegate;
+            try
+            {
+                _sponsor = setSponsorAction.EndInvoke(resp);
+                ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_server);
+                lease.Register(_sponsor);
+            }
+            catch (SocketException)
+            {
+                if (OnError != null)
+                {
+                    OnError("Unable to get Sponsor");
+                }
+
+            }
+        }
+
+        private void ReleaseSponsor()
+        {
+            Action releaseSponsor = new Action(_sponsor.setNotRenew);
+            releaseSponsor.BeginInvoke(OnReleaseSponsorComplete, null);
+        }
+        
+        private void OnReleaseSponsorComplete(IAsyncResult resp)
+        {
+            AsyncResult res = (AsyncResult)resp;
+            Action releaseAction = (Action)res.AsyncDelegate;
+            try
+            {
+                releaseAction.EndInvoke(resp);
+            }
+            catch (SocketException)
+            {
+                if (OnError != null)
+                {
+                    OnError("Unable to set sponsor not to renew.");
+                }
+            }
+        }
 
 		public void AddExpert(String theme)
 		{
@@ -210,7 +257,7 @@ namespace TriviaClient
 			}
 		}
 
-		public void UnregisterAll()
+        public void UnregisterAll()
 		{
 			lock (monitor)
 			{
@@ -221,6 +268,8 @@ namespace TriviaClient
 				}
 				_myExperts.Clear();
 			}
+
+            ReleaseSponsor();
 		}
 	}
 }

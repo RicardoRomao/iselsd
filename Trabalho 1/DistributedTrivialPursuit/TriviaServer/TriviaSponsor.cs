@@ -7,9 +7,10 @@ using Proxy;
 
 namespace TriviaServer
 {
-    public class TriviaSponsor : ITriviaSponsor
+    public class TriviaSponsor : MarshalByRefObject, ITriviaSponsor
     {
         private bool _toRenew = true;
+
         #region ITriviaSponsor Members
 
         public void setNotRenew()
@@ -22,7 +23,7 @@ namespace TriviaServer
         #region ISponsor Members
 
         public TimeSpan Renewal(ILease lease)
-        {
+        {            
             if (_toRenew)
                 return TimeSpan.FromSeconds(30);
             else
