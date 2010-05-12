@@ -18,12 +18,13 @@ namespace TriviaServer
         private readonly IDictionary<String, List<IExpert>> _expertList;
         private readonly NameValueCollection _serverRing;
         private IRingServer _nextServer;
+        private ITriviaSponsor _sponsor;
         private Int32 _nextServerIndex;
 
 		private readonly object monitor = new Object();
 
         public Server()
-        {
+        {            
             _guid = Guid.NewGuid();
             _nextServerIndex = 0;
 
@@ -32,10 +33,32 @@ namespace TriviaServer
 
             WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
             _nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
+            
+            SetSponsor();            
+        }
 
-            //ITriviaSponsor sponsor = _nextServer.getSponsor();
-            //ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_nextServer);
-            //lease.Register(sponsor);
+        private void SetSponsor()
+        {
+            Func<ITriviaSponsor> setSponsor = new Func<ITriviaSponsor>(_nextServer.getSponsor);            
+            setSponsor.BeginInvoke(OnSetSponsorComplete, null);
+            
+        }
+
+        private void OnSetSponsorComplete(IAsyncResult resp)
+        {   
+            AsyncResult res = (AsyncResult)resp;
+
+            Func<ITriviaSponsor> setSponsorAction = (Func<ITriviaSponsor>)res.AsyncDelegate;
+            try
+            {
+                _sponsor = setSponsorAction.EndInvoke(resp);
+                ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_nextServer);
+                lease.Register(_sponsor);
+            }
+            catch (SocketException)
+            {
+                Console.WriteLine("Unable to get Sponsor for next Ring Server.");
+            }
         }
 
         private void FowardRegistration(Guid guid, String theme, IExpert expert)
@@ -49,9 +72,7 @@ namespace TriviaServer
 				_nextServerIndex = (_nextServerIndex + 1) % _serverRing.Count;
 				WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
 				_nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
-                ITriviaSponsor sponsor = _nextServer.getSponsor();
-                ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_nextServer);
-                lease.Register(sponsor);
+                SetSponsor();
 				FowardRegistration(guid, theme, expert);
             }
         }
@@ -75,9 +96,7 @@ namespace TriviaServer
 				_nextServerIndex = (_nextServerIndex + 1) % _serverRing.Count;
 				WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
 				_nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
-                ITriviaSponsor sponsor = _nextServer.getSponsor();
-                ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_nextServer);
-                lease.Register(sponsor);
+                SetSponsor();
 				FowardUnregistration(guid, theme, expert);
             }
         }

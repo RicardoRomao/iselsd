@@ -52,13 +52,13 @@
     <Compile Include="TriviaSponsor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Proxy\Proxy.csproj">
       <Project>{0DEF9E83-0FA0-4811-AB3A-546811088344}</Project>
       <Name>Proxy</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
