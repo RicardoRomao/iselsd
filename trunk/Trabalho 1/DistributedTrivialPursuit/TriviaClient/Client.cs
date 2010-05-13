@@ -68,8 +68,11 @@ namespace TriviaClient
 
         private void ReleaseSponsor()
         {
-            Action releaseSponsor = new Action(_sponsor.setNotRenew);
-            releaseSponsor.BeginInvoke(OnReleaseSponsorComplete, null);
+            if (_sponsor != null)
+            {
+                Action releaseSponsor = new Action(_sponsor.setNotRenew);
+                releaseSponsor.BeginInvoke(OnReleaseSponsorComplete, null);
+            }
         }
         
         private void OnReleaseSponsorComplete(IAsyncResult resp)
