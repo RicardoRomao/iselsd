@@ -14,5 +14,7 @@ namespace Proxy
         String Ask(List<String> keyWords);
         IAsyncResult BeginAsk(List<String> keyWords, AsyncCallback callback, Object state);
         String EndAsk(IAsyncResult iaR);
+
+        ITriviaSponsor GetSponsor();
     }
 }

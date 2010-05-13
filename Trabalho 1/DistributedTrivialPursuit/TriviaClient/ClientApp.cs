@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Runtime.Remoting;
 
-namespace TriviaClient
+namespace TriviaExpert
 {
     class ClientApp
     {

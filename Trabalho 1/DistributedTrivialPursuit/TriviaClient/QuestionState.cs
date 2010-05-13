@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Proxy;
 
-namespace TriviaClient
+namespace TriviaExpert
 {
 	/// <summary>
 	/// Encapsulates a question state for

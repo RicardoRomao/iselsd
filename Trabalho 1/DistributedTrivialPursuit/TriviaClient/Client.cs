@@ -9,7 +9,7 @@ using System.Net.Sockets;
 using System.Runtime.Remoting.Lifetime;
 using System.Configuration;
 
-namespace TriviaClient
+namespace TriviaExpert
 {
     public delegate void ErrorHandler(String message);
     public delegate void ThemeHandler(String theme);
@@ -30,19 +30,33 @@ namespace TriviaClient
         private int _nrQuestions; //Question counter
 
         private IZoneServer _server;
+        public string ServerURL { get; private set; }
         private ITriviaSponsor _sponsor;
+
+        static Client()
+        {
+            RemotingConfiguration.Configure(configFile, false);
+        }
 
         public void Connect()
         {
-            RemotingConfiguration.Configure(configFile, false);
             WellKnownClientTypeEntry[] entries = RemotingConfiguration.GetRegisteredWellKnownClientTypes();
+            ServerURL = entries[0].ObjectUrl;
             _server = (IZoneServer)Activator.GetObject(entries[0].ObjectType, entries[0].ObjectUrl);
             _nrQuestions = 0;
-            SetSponsor();
+            AttachSponsor();
+        }
+
+        public void Disconnect()
+        {
+            ReleaseSponsor();
+            _server = null;
+            _myExperts = null;
+            _ringExperts = null;
         }
 
         #region Server-Sponsor relation methods
-        private void SetSponsor()
+        private void AttachSponsor()
         {
             _sponsor = _server.GetSponsor();
             ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_server);
@@ -53,12 +67,25 @@ namespace TriviaClient
         {
             if (_sponsor != null)
             {
-                _sponsor.setNotRenew();
-                ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_server);
-                lease.Unregister(_sponsor);
+                try
+                {
+                    _sponsor.setNotRenew();
+                    ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_server);
+                    lease.Unregister(_sponsor);
+                    _sponsor = null;
+                }
+                catch (SocketException)
+                {
+                    OnError("Problems occured while unregistering server sponsor.");
+                }
             }
         }
         #endregion
+
+        public int GetQuestionCount()
+        {
+            lock (monitor) { return _nrQuestions; }
+        }
 
         public void AddExpert(String theme)
         {
@@ -123,8 +150,8 @@ namespace TriviaClient
             Func<String, List<IExpert>> del = (Func<String, List<IExpert>>)res.AsyncDelegate;
             try
             {
-                List<IExpert> peritos = del.EndInvoke(resp);
-                if (peritos != null && peritos.Count > 0)
+                List<IExpert> experts = del.EndInvoke(resp);
+                if (experts != null && experts.Count > 0)
                 {
                     lock (monitor)
                     {
@@ -132,7 +159,7 @@ namespace TriviaClient
                         {
                             _ringExperts = new Dictionary<string, List<IExpert>>();
                         }
-                        _ringExperts.Add((String)resp.AsyncState, peritos);
+                        _ringExperts.Add((String)resp.AsyncState, experts);
                     }
                     theme = (String)resp.AsyncState;
                 }
@@ -166,8 +193,8 @@ namespace TriviaClient
             QuestionState state = null;
             try
             {
-                String answer = askQuestion.EndInvoke(resp);
                 state = (QuestionState)resp.AsyncState;
+                String answer = askQuestion.EndInvoke(resp);
                 if (OnAnswerReceived != null)
                 {
                     OnAnswerReceived(int.Parse(state.Index), answer);
@@ -179,7 +206,8 @@ namespace TriviaClient
                 {
                     OnError("Can't contact expert");
                 }
-                new Action<String, IExpert>(_server.NotifyClientFault).BeginInvoke(state.Theme, state.Expert, OnNotifyComplete, null);
+                new Action<String, IExpert>(_server.NotifyClientFault).
+                    BeginInvoke(state.Theme, state.Expert, OnNotifyComplete, null);
             }
         }
 
@@ -202,16 +230,17 @@ namespace TriviaClient
 
         public void Ask(String theme, List<String> keywords)
         {
-            List<IExpert> geniuses = null;
+            List<IExpert> experts = null;
             lock (monitor)
             {
-                geniuses = _ringExperts[theme];
+                experts = _ringExperts[theme];
                 _nrQuestions++;
-            }
-            foreach (IExpert perito in geniuses)
-            {
-                Func<List<String>, String> askQuestion = new Func<List<String>, String>(perito.Ask);
-                askQuestion.BeginInvoke(keywords, OnAskEnd, new QuestionState() { Index = _nrQuestions.ToString(), Theme = theme, Expert = perito });
+
+                foreach (IExpert e in experts)
+                {
+                    Func<List<String>, String> askQuestion = new Func<List<String>, String>(e.Ask);
+                    askQuestion.BeginInvoke(keywords, OnAskEnd, new QuestionState() { Index = _nrQuestions.ToString(), Theme = theme, Expert = e });
+                }
             }
         }
 
@@ -234,19 +263,22 @@ namespace TriviaClient
 
         public void UnregisterAll()
         {
-            lock (monitor)
+            if (_myExperts != null)
             {
-                foreach (IExpert expert in _myExperts)
+                lock (monitor)
                 {
-                    Action<String, IExpert> unregister = new Action<string, IExpert>(_server.UnRegister);
-                    unregister.BeginInvoke(
-                        expert.GetTheme(),
-                        expert,
-                        OnUnregisterComplete,
-                        null
-                    );
+                    foreach (IExpert expert in _myExperts)
+                    {
+                        Action<String, IExpert> unregister = new Action<string, IExpert>(_server.UnRegister);
+                        unregister.BeginInvoke(
+                            expert.GetTheme(),
+                            expert,
+                            OnUnregisterComplete,
+                            null
+                        );
+                    }
+                    _myExperts.Clear();
                 }
-                _myExperts.Clear();
             }
 
             ReleaseSponsor();

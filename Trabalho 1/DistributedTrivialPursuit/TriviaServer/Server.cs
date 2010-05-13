@@ -49,6 +49,7 @@ namespace TriviaServer
 
         #endregion
 
+        #region Private methods
         private void SetNextServer()
         {
             lock (monitor)
@@ -68,6 +69,37 @@ namespace TriviaServer
             }
         }
 
+        private void EnqueueExpert(string theme, IExpert expert)
+        {
+            lock (monitor)
+            {
+                //Check if the theme exists in the Dictionary
+                //If not, create a new entrance in the dictionary
+                if (!_expertList.Keys.Contains(theme))
+                    _expertList.Add(theme, new List<IExpert>());
+
+                _expertList[theme].Add(expert);
+                Console.WriteLine("[{0}] - REGISTER: {1}", _uId, theme);
+            }
+        }
+
+        private void DequeueExpert(string theme, IExpert expert)
+        {
+            lock (monitor)
+            {
+                //Check if the theme exists in the Dictionary
+                if (_expertList.Keys.Contains(theme))
+                {
+                    _expertList[theme].Remove(expert);
+                    //If there is no more experts of this theme, remove the theme
+                    if (_expertList[theme].Count == 0)
+                        _expertList.Remove(theme);
+                    Console.WriteLine("[{0}] - UNREGISTER: {1}", _uId, theme);
+                }
+            }
+        }
+        #endregion
+
         #region Sponsor management
 
         private void SetSponsor()
@@ -86,6 +118,7 @@ namespace TriviaServer
             try
             {
                 _sponsor = setSponsorAction.EndInvoke(resp);
+                Console.WriteLine(_sponsor == null);
                 ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_nextServer);
                 lease.Register(_sponsor);
             }
@@ -101,40 +134,40 @@ namespace TriviaServer
 
         private void FowardRegistration(string uId, string theme, IExpert expert)
         {
-            try
-            {
-                Console.WriteLine("[{0}] - FORWARD REGISTER: {1}", _uId, _serverRing[_nextServerIndex]);
-                _nextServer.Register(uId, theme, expert);
-            }
-            catch (SocketException)
-            {
-                SetNextServer();
-                FowardRegistration(uId, theme, expert);
-            }
-            catch (NullReferenceException)
-            {
-                SetNextServer();
-                Console.WriteLine("[{0}] - FORWARD REGISTER STOPED.", _uId);
-            }
+                try
+                {
+                    Console.WriteLine("[{0}] - FORWARD REGISTER: {1}", _uId, _serverRing[_nextServerIndex]);
+                    _nextServer.Register(uId, theme, expert);
+                }
+                catch (SocketException)
+                {
+                    SetNextServer();
+                    FowardRegistration(uId, theme, expert);
+                }
+                catch (NullReferenceException)
+                {
+                    SetNextServer();
+                    Console.WriteLine("[{0}] - FORWARD REGISTER STOPED.", _uId);
+                }
         }
 
         private void FowardUnregistration(string uId, string theme, IExpert expert)
         {
-            try
-            {
-                Console.WriteLine("[{0}] - FORWARD UNREGISTER: {1}", _uId, _serverRing[_nextServerIndex]);
-                _nextServer.UnRegister(uId, theme, expert);
-            }
-            catch (SocketException)
-            {
-                SetNextServer();
-                FowardUnregistration(uId, theme, expert);
-            }
-            catch (NullReferenceException)
-            {
-                SetNextServer();
-                Console.WriteLine("[{0}] - FORWARD REGISTER STOPED.", _uId);
-            }
+                try
+                {
+                    Console.WriteLine("[{0}] - FORWARD UNREGISTER: {1}", _uId, _serverRing[_nextServerIndex]);
+                    _nextServer.UnRegister(uId, theme, expert);
+                }
+                catch (SocketException)
+                {
+                    SetNextServer();
+                    FowardUnregistration(uId, theme, expert);
+                }
+                catch (NullReferenceException)
+                {
+                    SetNextServer();
+                    Console.WriteLine("[{0}] - FORWARD REGISTER STOPED.", _uId);
+                }
         }
 
         private void EndForwarding(IAsyncResult result)
@@ -156,7 +189,7 @@ namespace TriviaServer
             if (!_uId.Equals(uId))
             {
                 Console.WriteLine("[{0}] - Asking REGISTER: {1} - {2}", _uId, theme, uId);
-                Register(theme, expert);
+                EnqueueExpert(theme, expert);
 
                 //Foward the registration to the other ring servers asynchronously
                 Action<string, string, IExpert> asyncRegister = new Action<string, string, IExpert>(FowardRegistration);
@@ -173,7 +206,7 @@ namespace TriviaServer
             {
 
                 Console.WriteLine("[{0}] - Asking UNREGISTER: {1} - {2}", _uId, theme, uId);
-                UnRegister(theme, expert);
+                DequeueExpert(theme, expert);
 
                 //Foward the unregistration to the other ring servers asynchronously
                 Action<string, string, IExpert> asyncUnregister = new Action<string, string, IExpert>(FowardUnregistration);
@@ -187,17 +220,7 @@ namespace TriviaServer
 
         public void Register(string theme, IExpert expert)
         {
-            lock (monitor)
-            {
-                //Check if the theme exists in the Dictionary
-                //If not, create a new entrance in the dictionary
-                if (!_expertList.Keys.Contains(theme))
-                    _expertList.Add(theme, new List<IExpert>());
-
-                _expertList[theme].Add(expert);
-                Console.WriteLine("[{0}] - REGISTER: {1}", _uId, theme);
-            }
-
+            EnqueueExpert(theme, expert);
             //Foward the registration to the other ring servers asynchronously
             Action<string, string, IExpert> asyncRegister = new Action<string, string, IExpert>(FowardRegistration);
             asyncRegister.BeginInvoke(_uId, theme, expert, EndForwarding, null);
@@ -205,19 +228,8 @@ namespace TriviaServer
 
         public void UnRegister(string theme, IExpert expert)
         {
-            lock (monitor)
-            {
-                //Check if the theme exists in the Dictionary
-                if (_expertList.Keys.Contains(theme))
-                {
-                    _expertList[theme].Remove(expert);
-                    //If there is no more experts of this theme, remove the theme
-                    if (_expertList[theme].Count == 0)
-                        _expertList.Remove(theme);
-                    Console.WriteLine("[{0}] - UNREGISTER: {1}", _uId, theme);
-                }
-            }
 
+            DequeueExpert(theme, expert);
             //Foward the unregistration to the other ring servers asynchronously
             Action<string, string, IExpert> asyncUnregister = new Action<string, string, IExpert>(FowardUnregistration);
             asyncUnregister.BeginInvoke(_uId, theme, expert, EndForwarding, null);
@@ -261,7 +273,6 @@ namespace TriviaServer
                 lease.SponsorshipTimeout = TimeSpan.FromSeconds(10);
             }
             return lease;
-
         }
 
     }
