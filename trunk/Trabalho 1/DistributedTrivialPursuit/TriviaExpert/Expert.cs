@@ -9,12 +9,13 @@ using System.Runtime.Remoting.Messaging;
 using System.Configuration;
 using System.Runtime.Remoting.Lifetime;
 
-namespace TriviaClient
+namespace TriviaExpert
 {
     public class Expert : MarshalByRefObject, IExpert
     {
         private readonly IRepository _data;
         private readonly String _theme;
+        private const double RENEW_TIME = 60;
 
         public Expert(String theme)
         {
@@ -32,9 +33,9 @@ namespace TriviaClient
             ILease lease = (ILease)base.InitializeLifetimeService();
             if (lease.CurrentState == LeaseState.Initial)
             {
-                lease.InitialLeaseTime = TimeSpan.FromSeconds(10);
+                lease.InitialLeaseTime = TimeSpan.FromSeconds(60);
                 lease.SponsorshipTimeout = TimeSpan.FromSeconds(0);
-                lease.RenewOnCallTime = TimeSpan.FromSeconds(0);
+                lease.RenewOnCallTime = TimeSpan.FromSeconds(30);
             }
             return lease;
         }
@@ -66,6 +67,10 @@ namespace TriviaClient
             return ((Func<List<String>, string>)(iaR2.AsyncDelegate)).EndInvoke(iaR);
         }
 
+        public ITriviaSponsor GetSponsor()
+        {
+            return new ExpertSponsor(RENEW_TIME);
+        }
         #endregion
     }
 }

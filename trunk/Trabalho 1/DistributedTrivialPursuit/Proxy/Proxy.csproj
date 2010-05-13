@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IExpert.cs" />
-    <Compile Include="IExpertListener.cs" />
     <Compile Include="IRingServer.cs" />
     <Compile Include="ITriviaSponsor.cs" />
     <Compile Include="IZoneClient.cs" />

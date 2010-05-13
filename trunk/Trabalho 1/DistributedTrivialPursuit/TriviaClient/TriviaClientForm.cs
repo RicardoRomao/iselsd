@@ -13,7 +13,7 @@ using System.Net.Sockets;
 using System.Runtime.Remoting.Messaging;
 using TriviaModel;
 
-namespace TriviaClient
+namespace TriviaExpert
 {
     public partial class TriviaClientForm : Form
     {
@@ -22,10 +22,9 @@ namespace TriviaClient
         public TriviaClientForm()
         {
             InitializeComponent();
-            InitRemote();
         }
 
-        private void InitRemote()
+        private void Connect()
         {
             _client = new Client();
             _client.OnError += OnError;
@@ -34,14 +33,38 @@ namespace TriviaClient
             try
             {
                 _client.Connect();
+                RegisterThemes();
+                btnConnect.Enabled = false;
+                btnDisconnect.Enabled = true;
+                btnAsk.Enabled = true;
+                btnGetTheme.Enabled = true;
+                lblServerURL.Text = "Connected to: " + _client.ServerURL;
             }
             catch (SocketException)
             {
                 OnError("Connection to server was not possible.");
                 _client = null;
-                btnGetTheme.Enabled = false;
-                btnAsk.Enabled = false;
             }
+        }
+
+        private void Disconnect()
+        {
+            if (_client != null)
+            {
+                _client.UnregisterAll();
+                _client.Disconnect();
+            }
+
+            lstThemes.Items.Clear();
+            rtbQuestions.Clear();
+            rtbAnswers.Clear();
+            
+            btnAsk.Enabled = false;
+            btnGetTheme.Enabled = false;
+            btnDisconnect.Enabled = false;
+            btnConnect.Enabled = true;
+
+            lblServerURL.Text = "Not connected...";
         }
 
         private void RegisterThemes()
@@ -126,7 +149,9 @@ namespace TriviaClient
             if (lstThemes.SelectedItems.Count > 0)
             {
                 rtbQuestions.AppendText(
-                    String.Format("Question {0}\n", txtQuestion.Text));
+                    String.Format("Question {0}: {1}\n",
+                        _client.GetQuestionCount() + 1, txtQuestion.Text)
+                );
                 List<String> keywords = new List<String>(
                     txtQuestion.Text.Split(
                         new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries
@@ -141,8 +166,17 @@ namespace TriviaClient
 
         private void TriviaClientForm_OnClosing(object sender, FormClosingEventArgs e)
         {
-            if (_client != null)
-                _client.UnregisterAll();
+            Disconnect();
+        }
+
+        private void btnConnect_Click(object sender, EventArgs e)
+        {
+            Connect();
+        }
+
+        private void btnDisconnect_Click(object sender, EventArgs e)
+        {
+            Disconnect();
         }
     }
 }
