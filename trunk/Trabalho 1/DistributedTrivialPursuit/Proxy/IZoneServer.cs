@@ -8,8 +8,8 @@ namespace Proxy
     {
         void Register(String theme, IExpert expert);
         void UnRegister(String theme, IExpert expert);
-        List<IExpert> getExpertList(String theme);
+        List<IExpert> GetExpertList(String theme);
         void NotifyClientFault(String theme, IExpert expert);
-        ITriviaSponsor getSponsor();
+        ITriviaSponsor GetSponsor();
     }
 }

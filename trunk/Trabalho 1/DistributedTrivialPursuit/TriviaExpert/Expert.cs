@@ -7,6 +7,7 @@ using TriviaModel;
 using System.Threading;
 using System.Runtime.Remoting.Messaging;
 using System.Configuration;
+using System.Runtime.Remoting.Lifetime;
 
 namespace TriviaClient
 {
@@ -21,23 +22,36 @@ namespace TriviaClient
             _data = XMLRepository.GetInstance(ConfigurationManager.AppSettings["DataSource"]);
         }
 
-		public String Theme
-		{
-			get
-			{
-				return _theme;
-			}
-		}
+        public String GetTheme()
+        {
+            return _theme;
+        }
+
+        public override object InitializeLifetimeService()
+        {
+            ILease lease = (ILease)base.InitializeLifetimeService();
+            if (lease.CurrentState == LeaseState.Initial)
+            {
+                lease.InitialLeaseTime = TimeSpan.FromSeconds(10);
+                lease.SponsorshipTimeout = TimeSpan.FromSeconds(0);
+                lease.RenewOnCallTime = TimeSpan.FromSeconds(0);
+            }
+            return lease;
+        }
 
         #region IExpert Members
 
-		public event QuestionHandler OnQuestionAnswered;
+        public event QuestionHandler OnQuestionAnswered;
 
         public string Ask(List<String> keyWords)
         {
             String answer = _data.GetAnswer(keyWords, _theme);
             if (!String.IsNullOrEmpty(answer) && OnQuestionAnswered != null)
-				OnQuestionAnswered(this, String.Format("{0}: {1}", _theme, answer));
+            {
+                OnQuestionAnswered(this,
+                                   string.Join(",", keyWords.ToArray()),
+                                   answer);
+            }
             return answer;
         }
 
