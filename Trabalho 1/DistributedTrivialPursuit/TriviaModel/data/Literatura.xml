@@ -1,0 +1,44 @@
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="repSquema.xsd">
+	<theme name="Literatura">
+		<card>
+			<question text="O judeu Shylock e o principal personagem de que peça de Shakespeare?"/>
+			<answer text="O Mercador De Veneza"/>
+		</card>
+		<card>
+			<question text="Como se chama o pai de carne e osso do infeliz boneco de madeira a quem crescia o nariz quando mentia?"/>
+			<answer text="Geppetto"/>
+		</card>
+		<card>
+			<question text="Quem e o cavaleiro da triste figura?"/>
+			<answer text="Dom Quixote"/>
+		</card>
+		<card>
+			<question text="Que pintor e escultor italiano morreu no mesmo ano em que nasceu Shakespeare?"/>
+			<answer text="Miguel Angelo"/>
+		</card>
+		<card>
+			<question text="De quem estava a espera Vladimir uma famosa obra de Samuel Beckett?"/>
+			<answer text="Godot"/>
+		</card>
+		<card>
+			<question text="Em que pais decorre a acçao do ballet Giselle?"/>
+			<answer text="Alemanha"/>
+		</card>
+		<card>
+			<question text="Fidelio e a unica opera de que compositor?"/>
+			<answer text="Beethoven"/>
+		</card>
+		<card>
+			<question text="De que personagem descreveu as aventuras J. M. Barrie?"/>
+			<answer text="Peter Pan"/>
+		</card>
+		<card>
+			<question text="Como se chamava o escritor homossexual que foi o grande amor da pintora Dora Carrington?"/>
+			<answer text="Lytton Strachey"/>
+		</card>
+		<card>
+			<question text="Quem e o autor da fabula A Lebre e a Tartaruga?"/>
+			<answer text="Esopo"/>
+		</card>
+	</theme>
+</root>

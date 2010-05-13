@@ -1,0 +1,44 @@
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="repSquema.xsd">
+	<theme name="Ciencias">
+		<card>
+			<question text="O acido acetilsalicilico e componente principal de que vulgar medicamento?"/>
+			<answer text="Aspirina"/>
+		</card>
+		<card>
+			<question text="A temperatura global do nosso planeta esta a subir. Quanto aumentou aproximadamente nos ultimos 100 anos?"/>
+			<answer text="1"/>
+		</card>
+		<card>
+			<question text="Qual a sigla que os veiculos movidos a gaz tem origatoriamente de usar?"/>
+			<answer text="Gpl"/>
+		</card>
+		<card>
+			<question text="Qual e o numero maximo de eclipses que podem ocorrer num ano?"/>
+			<answer text="5"/>
+		</card>
+		<card>
+			<question text="Qual e o unico planeta cuja rotaçao e feita no sentido dos ponteiros do relogio?"/>
+			<answer text="Venus"/>
+		</card>
+		<card>
+			<question text="Uma caça-minas e um 'navio' ou um 'aviao' de guerra?"/>
+			<answer text="Navio"/>
+		</card>
+		<card>
+			<question text="Que planeta tem o ano mais curto?"/>
+			<answer text="Mercurio"/>
+		</card>
+		<card>
+			<question text="Que terrivel doença foi identificada pela 1ª vez nos Estados Unidos pelo Prof. Michael Gottlieb?"/>
+			<answer text="Sida"/>
+		</card>
+		<card>
+			<question text="Para alem dos seres humanos, que outros animais acasalam de frente um para o outro?"/>
+			<answer text="Golfinhos E Baleias"/>
+		</card>
+		<card>
+			<question text="Que faz uma vaca durante o 3/4 dia?"/>
+			<answer text="Rumina"/>
+		</card>
+	</theme>
+</root>

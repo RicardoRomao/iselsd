@@ -95,10 +95,13 @@ namespace TriviaClient
 
 		private void btnAsk_Click(object sender, EventArgs e)
 		{
-			rtbQuestions.AppendText(String.Format("Question {0}\n", txtQuestion.Text));
-			List<String> keywords = new List<String>(txtQuestion.Text.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
-			_client.Ask(lstThemes.SelectedItem.ToString(), keywords);
-			txtQuestion.Text = "";
+            if (lstThemes.SelectedItems.Count > 0)
+            {
+                rtbQuestions.AppendText(String.Format("Question {0}\n", txtQuestion.Text));
+                List<String> keywords = new List<String>(txtQuestion.Text.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
+                _client.Ask(lstThemes.SelectedItem.ToString(), keywords);
+                txtQuestion.Text = "";
+            }
 		}
 
 		private void TriviaClientForm_OnClosing(object sender, FormClosingEventArgs e)

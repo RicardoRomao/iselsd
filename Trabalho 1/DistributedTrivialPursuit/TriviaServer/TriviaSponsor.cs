@@ -9,7 +9,7 @@ namespace TriviaServer
 {
     public class TriviaSponsor : MarshalByRefObject, ITriviaSponsor
     {
-        private bool _toRenew = true;
+        private volatile bool _toRenew = true;
 
         #region ITriviaSponsor Members
 
@@ -23,7 +23,8 @@ namespace TriviaServer
         #region ISponsor Members
 
         public TimeSpan Renewal(ILease lease)
-        {            
+        {
+            Console.WriteLine("Sponsor being called....");
             if (_toRenew)
                 return TimeSpan.FromSeconds(30);
             else

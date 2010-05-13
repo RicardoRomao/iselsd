@@ -1,0 +1,44 @@
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="repSquema.xsd">
+	<theme name="Geografia">
+		<card>
+			<question text="Em que vila da Beira Interior nasceu o navegador Pedro Alvares Cabral?"/>
+			<answer text="Belmonte"/>
+		</card>
+		<card>
+			<question text="Que rio e maior: o Tejo ou o Sena?"/>
+			<answer text="Tejo"/>
+		</card>
+		<card>
+			<question text="No norte de Portugal, como e ainda designada a parte inferior de algumas casas que tem como funçao principal guardar o gado?"/>
+			<answer text="Loja"/>
+		</card>
+		<card>
+			<question text="Qual e a capital do Iemen?"/>
+			<answer text="Sanaa"/>
+		</card>
+		<card>
+			<question text="Boticas, a localidade onde se situa a estancia de aguas minerais Carvalhelhos, pertence a que distrito?"/>
+			<answer text="Vila Real"/>
+		</card>
+		<card>
+			<question text="Que pedra preciosa da nome a uma regiao da Sardenha?"/>
+			<answer text="Esmeralda"/>
+		</card>
+		<card>
+			<question text="A que pais pertencem actualmente as ilhas Bounty, descobertas em 1788?"/>
+			<answer text="Nova Zelandia"/>
+		</card>
+		<card>
+			<question text="Qual e o oceano mais pequeno do mundo?"/>
+			<answer text="Arctico"/>
+		</card>
+		<card>
+			<question text="Qual e a torre mais alta da Europa?"/>
+			<answer text="Torre Eiffel"/>
+		</card>
+		<card>
+			<question text="Que pequeno pais faz fronteira com a Alemanha, a Belgica e a França?"/>
+			<answer text="Luxemburgo"/>
+		</card>
+	</theme>
+</root>

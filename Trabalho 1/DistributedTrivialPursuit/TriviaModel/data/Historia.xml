@@ -1,0 +1,44 @@
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="repSquema.xsd">
+	<theme name="Historia">
+		<card>
+			<question text="A que presidente norte-americano assasinado sucedeu Andrew Johnson?"/>
+			<answer text="Abraham Lincoln"/>
+		</card>
+		<card>
+			<question text="Que rei portugues, conhecido pelo seu mau feitio, obrigou a sua rainha a transformar pao em rosas?"/>
+			<answer text="Dinis"/>
+		</card>
+		<card>
+			<question text="Que presidente norte-americano assinou o Tratado de Versalhes no fim da 1º Guerra Mundial?"/>
+			<answer text="Woodrow Wilson"/>
+		</card>
+		<card>
+			<question text="Quem tentou Juan Fernandez Krohn assassinar a 13 de Maio de 1981?"/>
+			<answer text="Joao Paulo"/>
+		</card>
+		<card>
+			<question text="Foi uma rainha portuguesa que introduziu em Inglaterra o, agora muito british, habito de tomar cha. Quem foi ela?"/>
+			<answer text="Catarina"/>
+		</card>
+		<card>
+			<question text="Em que ano aconteceu o desastre nuclear na central russa de Chernobyl?"/>
+			<answer text="1986"/>
+		</card>
+		<card>
+			<question text="No inicio desde seculo houve um burçao portugues que foi considerado o mais arrojado falsificador do mundo. De quem se trata?"/>
+			<answer text="Alves Dos Reis"/>
+		</card>
+		<card>
+			<question text="O comboio correio, vítima do roubo do seculo efectuado em 1963, viajava entre Londres e que outra cidade britanica?"/>
+			<answer text="Glasgow"/>
+		</card>
+		<card>
+			<question text="Em que ano morreu Sir Winston Churchill?"/>
+			<answer text="1965"/>
+		</card>
+		<card>
+			<question text="Que polemico muro foi construido em 1969?"/>
+			<answer text="Muro De Berlim"/>
+		</card>
+	</theme>
+</root>

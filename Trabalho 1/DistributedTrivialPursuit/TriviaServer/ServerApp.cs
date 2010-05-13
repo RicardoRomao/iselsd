@@ -13,6 +13,7 @@ namespace TriviaServer
 
         public static void Main(String[] args)
         {
+            Console.WriteLine(".: {0} :.", ConfigurationManager.AppSettings["serverName"]);
             RemotingConfiguration.Configure(configFile, false);
             Server ps = new Server();
             Console.WriteLine("Server started ...");
