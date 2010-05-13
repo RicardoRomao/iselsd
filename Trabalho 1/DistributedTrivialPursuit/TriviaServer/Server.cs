@@ -15,6 +15,7 @@ namespace TriviaServer
     public sealed class Server : MarshalByRefObject, IRingServer, IZoneServer
     {
         private readonly string _uId;
+        private readonly string _ownUrl;
         private readonly IDictionary<String, List<IExpert>> _expertList;
         private readonly NameValueCollection _serverRing;
         private IRingServer _nextServer;
@@ -27,7 +28,7 @@ namespace TriviaServer
 
         public Server()
         {
-            _uId = ConfigurationManager.AppSettings["serverName"];
+            _uId = ConfigurationManager.AppSettings["serverId"];
 
             _expertList = new Dictionary<String, List<IExpert>>();
             _serverRing = (NameValueCollection)ConfigurationManager.GetSection("RingServers");
@@ -35,15 +36,25 @@ namespace TriviaServer
             for (int i = 0; i < _serverRing.Keys.Count; i++)
             {
                 if (_serverRing.Keys[i].Equals(_uId))
-                    _nextServerIndex = i + 1 == _serverRing.Count ? 0 : i + 1;
+                {
+                    _nextServerIndex = i;
+                    _ownUrl = _serverRing[i];
+                }
             }
-
-            WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
-            _nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
-            SetSponsor();
         }
 
         #endregion
+
+        private void SetNextServer()
+        {
+             _nextServerIndex = (_nextServerIndex + 1) % _serverRing.Count; 
+
+            Console.WriteLine("[{0}] - Trying to connect to server {1}", _uId, _serverRing[_nextServerIndex]);
+            WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
+            _nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
+            SetSponsor();
+
+        }
 
         #region Sponsor management
 
@@ -79,16 +90,16 @@ namespace TriviaServer
         {
             try
             {
+                Console.WriteLine("[{0}] - Forwarding registration to {1} server...", _uId, _serverRing[_nextServerIndex]);
+
                 //First try the FastPath
-                Console.WriteLine("[{0}] - Forwarding registration to {1} server...",_uId, _serverRing[_nextServerIndex]);
+                if (_nextServer == null || _nextServer.GetId().Equals(_uId))
+                    SetNextServer();
                 _nextServer.Register(uId, theme, expert);
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
-                _nextServerIndex = (_nextServerIndex + 1) % _serverRing.Count;
-                WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
-                _nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
-                SetSponsor();
+                SetNextServer();
                 FowardRegistration(uId, theme, expert);
             }
         }
@@ -105,15 +116,14 @@ namespace TriviaServer
             try
             {
                 //First try the FastPath
-                Console.WriteLine("[{0}] - Forwarding unregistration to {1} server...",_uId, _serverRing[_nextServerIndex]);
+                if (_nextServer == null || _nextServer.GetId().Equals(_uId))
+                    SetNextServer();
+                Console.WriteLine("[{0}] - Forwarding unregistration to {1} server...", _uId, _serverRing[_nextServerIndex]);
                 _nextServer.UnRegister(uId, theme, expert);
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
-                _nextServerIndex = (_nextServerIndex + 1) % _serverRing.Count;
-                WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
-                _nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
-                SetSponsor();
+                SetNextServer();
                 FowardUnregistration(uId, theme, expert);
             }
         }
@@ -134,6 +144,8 @@ namespace TriviaServer
 
         #region IRingServer Members
 
+        public string GetId() { return _uId; }
+
         public void Register(string uId, string theme, IExpert expert)
         {
             Console.WriteLine("[{0}] - Remote registration of expert on {1} sent by server {2}", _uId, theme, uId);
@@ -147,7 +159,7 @@ namespace TriviaServer
                     //If not, create a new entrance in the dictionary
                     if (!_expertList.Keys.Contains(theme))
                         _expertList.Add(theme, new List<IExpert>());
-                    Console.WriteLine("[{0}] - Registering remote expert on {1} sent by server {2}",_uId, theme,uId);
+                    Console.WriteLine("[{0}] - Registering remote expert on {1} sent by server {2}", _uId, theme, uId);
 
                     //Safely add the expert in the corresponding list
                     _expertList[theme].Add(expert);
@@ -161,14 +173,14 @@ namespace TriviaServer
 
         public void UnRegister(string uId, string theme, IExpert expert)
         {
-            Console.WriteLine("[{0}] - Remote unregistration of expert on {1} sent by server {2}",_uId, theme, uId);
+            Console.WriteLine("[{0}] - Remote unregistration of expert on {1} sent by server {2}", _uId, theme, uId);
             //Check if is the initial sender of the registration
             //If so the process ends here, if not, it must unregister the expert and foward the registration
             if (!_uId.Equals(uId))
             {
                 lock (monitor)
                 {
-                    Console.WriteLine("[{0}] - Unregistering remote expert on {1} sent by server {2}",_uId, theme, uId);
+                    Console.WriteLine("[{0}] - Unregistering remote expert on {1} sent by server {2}", _uId, theme, uId);
                     //Check if the theme exists in the Dictionary
                     if (_expertList.Keys.Contains(theme))
                     {
@@ -220,7 +232,7 @@ namespace TriviaServer
                     //If there is no more experts of this theme, remove the theme
                     if (_expertList[theme].Count == 0)
                         _expertList.Remove(theme);
-                    Console.WriteLine("[{0}] - Unregistered expert for {1}",_uId, theme);
+                    Console.WriteLine("[{0}] - Unregistered expert for {1}", _uId, theme);
 
                 }
             }
