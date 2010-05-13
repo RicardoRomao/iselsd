@@ -7,6 +7,7 @@ using Proxy;
 using System.Runtime.Remoting.Messaging;
 using System.Net.Sockets;
 using System.Runtime.Remoting.Lifetime;
+using System.Configuration;
 
 namespace TriviaClient
 {
@@ -22,7 +23,8 @@ namespace TriviaClient
 		public event ResponseHandler OnAnswerReceived;
 
 		private readonly object monitor = new object();
-		private readonly IZoneServer _server;
+        private static readonly string configFile = ConfigurationManager.AppSettings["clientConfigFile"];
+        private readonly IZoneServer _server;
 		private List<Expert> _myExperts;
 		private Dictionary<String, List<IExpert>> _ringExperts;
 		private int _nrQuestions;
@@ -30,11 +32,9 @@ namespace TriviaClient
 
 		public Client()
 		{
+            RemotingConfiguration.Configure(configFile, false);
 			WellKnownClientTypeEntry[] entries = RemotingConfiguration.GetRegisteredWellKnownClientTypes();
-			_server = (IZoneServer)Activator.GetObject(
-                entries.Single(t => t.ObjectType.Equals(typeof(IZoneServer))).ObjectType,
-                entries.Single(t => t.ObjectType.Equals(typeof(IZoneServer))).ObjectUrl);
-                //entries[0].ObjectType, entries[0].ObjectUrl);
+			_server = (IZoneServer)Activator.GetObject(entries[0].ObjectType, entries[0].ObjectUrl);
             _nrQuestions = 0;
             SetSponsor();
 		}

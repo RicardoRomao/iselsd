@@ -1,0 +1,44 @@
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="repSquema.xsd">
+	<theme name="Cinema">
+		<card>
+			<question text="Que grupo punk gostaria que Deus barbeasse a rainha de Inglaterra, fazendo um trocadilho divertido com o hino ingles?"/>
+			<answer text="Sex Pistols"/>
+		</card>
+		<card>
+			<question text="Que celebre moinho parisiense festejou o seu primeiro centenario em 1989?"/>
+			<answer text="Moulin Rouge"/>
+		</card>
+		<card>
+			<question text="Os U2 inventaram um canal de televisao para apresentarem a sua digressão de 1993. Como se chamava?"/>
+			<answer text="Zoo Tv"/>
+		</card>
+		<card>
+			<question text="Que actriz nao resistiu a uma Proposta Indecente?"/>
+			<answer text="Demi Moore"/>
+		</card>
+		<card>
+			<question text="Em que loja gostava Audrey Hepburn de tomar o pequeno-almoço no filme Boneca de Luxo?"/>
+			<answer text="Tiffany's"/>
+		</card>
+		<card>
+			<question text="O que significa a sigla CNN?"/>
+			<answer text="Cable News Network"/>
+		</card>
+		<card>
+			<question text="Como se chama a nave espacial de 2001: Odisseia no Espaço ?"/>
+			<answer text="Discovery"/>
+		</card>
+		<card>
+			<question text="Quem dirigiu Claudia Cardinali e Alain Delon em O Leopardo?"/>
+			<answer text="Visconti"/>
+		</card>
+		<card>
+			<question text="Como se chama o projecto de benefencia criado por Bob Geldof em 1984?"/>
+			<answer text="Live Aid"/>
+		</card>
+		<card>
+			<question text="Quem era o homem das Mil Imagens e, mais tarde, de Chuva de Estrelas?"/>
+			<answer text="Jose Nuno Martins"/>
+		</card>
+	</theme>
+</root>

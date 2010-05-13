@@ -1,0 +1,44 @@
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="repSquema.xsd">
+	<theme name="Desporto">
+		<card>
+			<question text="O que e que nao se faz sem ovos?"/>
+			<answer text="Omelete"/>
+		</card>
+		<card>
+			<question text="Que equipa inglesa de futebol esteve envolvida na tragedia do estadio de Heysel?"/>
+			<answer text="Liverpool"/>
+		</card>
+		<card>
+			<question text="Em que ano se comemorou o primeiro centenario dos Jogos Olimpicos modernos?"/>
+			<answer text="1996"/>
+		</card>
+		<card>
+			<question text="No Mundial de futebol de 1996 a selecçao portuguesa alcançou o seu melhor resultado de sempre. Em que lugar ficamos?"/>
+			<answer text="3"/>
+		</card>
+		<card>
+			<question text="De que cor e o vinho que se extrai da uva Chardonnay?"/>
+			<answer text="Branco"/>
+		</card>
+		<card>
+			<question text="O tradicional Bacalhau a Lagareiro e guisado ou assado?"/>
+			<answer text="Assado"/>
+		</card>
+		<card>
+			<question text="Que distancia percorreu Carl Lewis em 9.92 segundos?"/>
+			<answer text="100"/>
+		</card>
+		<card>
+			<question text="Em que pais de realizaram os primeiros Jogos Olimpicos apos a I Guerra Mundial?"/>
+			<answer text="Belgica"/>
+		</card>
+		<card>
+			<question text="Quantas horas dura o circuito de motos de Le Mans?"/>
+			<answer text="24"/>
+		</card>
+		<card>
+			<question text="Qual e o ultimo dia em que se pode ser virgem?"/>
+			<answer text="23 De Setembro"/>
+		</card>
+	</theme>
+</root>

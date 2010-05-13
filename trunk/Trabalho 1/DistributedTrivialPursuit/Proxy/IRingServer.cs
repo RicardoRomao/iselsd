@@ -6,8 +6,8 @@ namespace Proxy
 {
     public interface IRingServer
     {
-        void Register(Guid guid, string theme, IExpert expert);
-        void UnRegister(Guid guid, string theme, IExpert expert);
+        void Register(string uId, string theme, IExpert expert);
+        void UnRegister(string uId, string theme, IExpert expert);
         ITriviaSponsor getSponsor();
     }
 }
