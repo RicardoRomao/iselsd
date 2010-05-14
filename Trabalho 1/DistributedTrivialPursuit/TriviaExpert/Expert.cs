@@ -69,9 +69,9 @@ namespace TriviaExpert
             ILease lease = (ILease)base.InitializeLifetimeService();
             if (lease.CurrentState == LeaseState.Initial)
             {
-                lease.InitialLeaseTime = TimeSpan.FromSeconds(30);
+                lease.InitialLeaseTime = TimeSpan.FromSeconds(60);
                 lease.SponsorshipTimeout = TimeSpan.FromSeconds(10);
-                lease.RenewOnCallTime = TimeSpan.FromSeconds(10);
+                lease.RenewOnCallTime = TimeSpan.FromSeconds(30);
             }
             return lease;
         }
