@@ -19,7 +19,7 @@ namespace TriviaServer
         private readonly IDictionary<String, List<IExpert>> _expertList;
         private readonly NameValueCollection _serverRing;
 
-        private ITriviaSponsor _sponsor;
+        private ITriviaSponsor _serverSponsor;
         private const double RENEW_TIME = 60;
 
         private IRingServer _nextServer;
@@ -60,7 +60,7 @@ namespace TriviaServer
                     Console.WriteLine("[{0}] - NEXT SERVER: {1}", _uId, _serverRing[_nextServerIndex]);
                     WellKnownClientTypeEntry et = new WellKnownClientTypeEntry(typeof(IRingServer), _serverRing.Get(_nextServerIndex));
                     _nextServer = (IRingServer)Activator.GetObject(et.ObjectType, et.ObjectUrl);
-                    //SetSponsor();
+                    SetSponsor();
                 }
                 else
                 {
@@ -104,7 +104,7 @@ namespace TriviaServer
 
         private void SetSponsor()
         {
-            Console.WriteLine("[{0}] - SENDING SPONSOR REQUEST.");
+            Console.WriteLine("[{0}] - SENDING SPONSOR REQUEST.",_uId);
             Func<ITriviaSponsor> setSponsor = new Func<ITriviaSponsor>(_nextServer.GetSponsor);
             setSponsor.BeginInvoke(OnSetSponsorComplete, null);
 
@@ -117,14 +117,14 @@ namespace TriviaServer
             Func<ITriviaSponsor> setSponsorAction = (Func<ITriviaSponsor>)res.AsyncDelegate;
             try
             {
-                _sponsor = setSponsorAction.EndInvoke(resp);
-                Console.WriteLine(_sponsor == null);
+                _serverSponsor = setSponsorAction.EndInvoke(resp);
+                Console.WriteLine(_serverSponsor == null);
                 ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_nextServer);
-                lease.Register(_sponsor);
+                lease.Register(_serverSponsor);
             }
             catch (SocketException)
             {
-                Console.WriteLine("[{0}] - NO SPONSOR RECEIVED.");
+                Console.WriteLine("[{0}] - NO SPONSOR RECEIVED.",_uId);
             }
         }
 
@@ -269,7 +269,7 @@ namespace TriviaServer
             if (lease.CurrentState == LeaseState.Initial)
             {
                 lease.InitialLeaseTime = TimeSpan.FromSeconds(20);
-                lease.RenewOnCallTime = TimeSpan.FromSeconds(0);
+                lease.RenewOnCallTime = TimeSpan.FromSeconds(10);
                 lease.SponsorshipTimeout = TimeSpan.FromSeconds(10);
             }
             return lease;

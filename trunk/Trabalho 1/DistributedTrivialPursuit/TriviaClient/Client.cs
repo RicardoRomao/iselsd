@@ -15,7 +15,7 @@ namespace TriviaExpert
     public delegate void ThemeHandler(String theme);
     public delegate void ResponseHandler(Int32 questionNumber, String answer);
 
-    public class Client
+    public class Client : IClient
     {
         public event ErrorHandler OnError;
         public event QuestionHandler OnQuestionAnswered;
@@ -27,11 +27,14 @@ namespace TriviaExpert
 
         private List<IExpert> _myExperts; //List of experts created locally
         private Dictionary<String, List<IExpert>> _ringExperts; //List of remote experts
+        private ITriviaSponsor _expertsSponsor;
+
         private int _nrQuestions; //Question counter
+        private bool _isConnected;
 
         private IZoneServer _server;
-        public string ServerURL { get; private set; }
-        private ITriviaSponsor _sponsor;
+        private string _serverUrl;
+        private ITriviaSponsor _serverSponsor;
 
         static Client()
         {
@@ -41,38 +44,49 @@ namespace TriviaExpert
         public void Connect()
         {
             WellKnownClientTypeEntry[] entries = RemotingConfiguration.GetRegisteredWellKnownClientTypes();
-            ServerURL = entries[0].ObjectUrl;
+            _serverUrl = entries[0].ObjectUrl;
             _server = (IZoneServer)Activator.GetObject(entries[0].ObjectType, entries[0].ObjectUrl);
             _nrQuestions = 0;
-            AttachSponsor();
+            _isConnected = true;
+            AttachServerSponsor();
         }
 
         public void Disconnect()
         {
-            ReleaseSponsor();
+            ReleaseServerSponsor();
             _server = null;
             _myExperts = null;
             _ringExperts = null;
+            _isConnected = false;
         }
+
+        public int GetQuestionCount()
+        { lock (monitor) { return _nrQuestions; } }
+
+        public string GetServerUrl()
+        { return _serverUrl; }
+
+        public bool IsConnected()
+        { return _isConnected; }
 
         #region Server-Sponsor relation methods
-        private void AttachSponsor()
+        private void AttachServerSponsor()
         {
-            _sponsor = _server.GetSponsor();
+            _serverSponsor = _server.GetSponsor();
             ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_server);
-            lease.Register(_sponsor);
+            lease.Register(_serverSponsor);
         }
 
-        private void ReleaseSponsor()
+        private void ReleaseServerSponsor()
         {
-            if (_sponsor != null)
+            if (_serverSponsor != null)
             {
                 try
                 {
-                    _sponsor.setNotRenew();
+                    _serverSponsor.setNotRenew();
                     ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_server);
-                    lease.Unregister(_sponsor);
-                    _sponsor = null;
+                    lease.Unregister(_serverSponsor);
+                    _serverSponsor = null;
                 }
                 catch (SocketException)
                 {
@@ -82,12 +96,8 @@ namespace TriviaExpert
         }
         #endregion
 
-        public int GetQuestionCount()
-        {
-            lock (monitor) { return _nrQuestions; }
-        }
-
-        public void AddExpert(String theme)
+        #region Local experts management
+        public void AddLocalExpert(String theme)
         {
             lock (monitor)
             {
@@ -107,83 +117,23 @@ namespace TriviaExpert
                 OnQuestionAnswered(sender, keyWords, answer);
             }
         }
+        #endregion
 
-        private void OnRegisterComplete(IAsyncResult resp)
+        #region Expert interactions and obtainance
+        public void Ask(String theme, List<String> keywords)
         {
-            AsyncResult res = (AsyncResult)resp;
-            Action<String, IExpert> registerAction = (Action<String, IExpert>)res.AsyncDelegate;
-            try
-            {
-                registerAction.EndInvoke(resp);
-            }
-            catch (SocketException ex)
-            {
-                if (OnError != null)
-                {
-                    OnError(String.Format("Register failed for theme {0}.", (String)resp.AsyncState));
-                }
-            }
-        }
-
-        public void RegisterAll()
-        {
+            List<IExpert> experts = null;
             lock (monitor)
             {
-                // Begin registering the experts
-                Action<String, IExpert> registerAction = new Action<string, IExpert>(_server.Register);
-                foreach (IExpert expert in _myExperts)
-                {
-                    registerAction.BeginInvoke(
-                        expert.GetTheme(),
-                        expert,
-                        OnRegisterComplete,
-                        expert.GetTheme()
-                    );
-                }
-            }
-        }
+                experts = _ringExperts[theme];
+                _nrQuestions++;
 
-        private void OnExpertsGet(IAsyncResult resp)
-        {
-            String theme = null;
-            AsyncResult res = (AsyncResult)resp;
-            Func<String, List<IExpert>> del = (Func<String, List<IExpert>>)res.AsyncDelegate;
-            try
-            {
-                List<IExpert> experts = del.EndInvoke(resp);
-                if (experts != null && experts.Count > 0)
+                foreach (IExpert e in experts)
                 {
-                    lock (monitor)
-                    {
-                        if (_ringExperts == null)
-                        {
-                            _ringExperts = new Dictionary<string, List<IExpert>>();
-                        }
-                        _ringExperts.Add((String)resp.AsyncState, experts);
-                    }
-                    theme = (String)resp.AsyncState;
+                    Func<List<String>, String> askQuestion = new Func<List<String>, String>(e.Ask);
+                    askQuestion.BeginInvoke(keywords, OnAskEnd, new QuestionState() { Index = _nrQuestions.ToString(), Theme = theme, Expert = e });
                 }
             }
-            catch (SocketException ex)
-            {
-                if (OnError != null)
-                {
-                    OnError("Can't get experts");
-                }
-            }
-            finally
-            {
-                if (OnExpertsGetComplete != null)
-                {
-                    OnExpertsGetComplete(theme);
-                }
-            }
-        }
-
-        public void GetExperts(String theme)
-        {
-            Func<String, List<IExpert>> getThemeExperts = new Func<string, List<IExpert>>(_server.GetExpertList);
-            getThemeExperts.BeginInvoke(theme, OnExpertsGet, theme);
         }
 
         private void OnAskEnd(IAsyncResult resp)
@@ -228,35 +178,116 @@ namespace TriviaExpert
             }
         }
 
-        public void Ask(String theme, List<String> keywords)
+        public void GetExperts(String theme)
         {
-            List<IExpert> experts = null;
-            lock (monitor)
-            {
-                experts = _ringExperts[theme];
-                _nrQuestions++;
-
-                foreach (IExpert e in experts)
-                {
-                    Func<List<String>, String> askQuestion = new Func<List<String>, String>(e.Ask);
-                    askQuestion.BeginInvoke(keywords, OnAskEnd, new QuestionState() { Index = _nrQuestions.ToString(), Theme = theme, Expert = e });
-                }
-            }
+            Func<String, List<IExpert>> getThemeExperts = new Func<string, List<IExpert>>(_server.GetExpertList);
+            getThemeExperts.BeginInvoke(theme, OnExpertsGet, theme);
         }
 
-        private void OnUnregisterComplete(IAsyncResult resp)
+        private void OnExpertsGet(IAsyncResult resp)
         {
+            String theme = null;
             AsyncResult res = (AsyncResult)resp;
-            Action<String, IExpert> unregisterAction = (Action<String, IExpert>)res.AsyncDelegate;
+            Func<String, List<IExpert>> del = (Func<String, List<IExpert>>)res.AsyncDelegate;
             try
             {
-                unregisterAction.EndInvoke(resp);
+                List<IExpert> experts = del.EndInvoke(resp);
+                if (experts != null && experts.Count > 0)
+                {
+                    foreach (IExpert expert in experts)
+                        AttachExpertSponsor(expert);
+
+                    lock (monitor)
+                    {
+                        if (_ringExperts == null)
+                        {
+                            _ringExperts = new Dictionary<string, List<IExpert>>();
+                        }
+                        _ringExperts.Add((String)resp.AsyncState, experts);
+                    }
+                    theme = (String)resp.AsyncState;
+                }
             }
             catch (SocketException ex)
             {
                 if (OnError != null)
                 {
-                    OnError(String.Format("Unregister failed for theme {0}.", (String)resp.AsyncState));
+                    OnError("Can't get experts");
+                }
+            }
+            finally
+            {
+                if (OnExpertsGetComplete != null)
+                {
+                    OnExpertsGetComplete(theme);
+                }
+            }
+        }
+
+        private void AttachExpertSponsor(IExpert expert)
+        {
+            Func<ITriviaSponsor> getExpertSponsor =
+                new Func<ITriviaSponsor>(expert.GetSponsor);
+            getExpertSponsor.BeginInvoke(OnAttachExpertSponsor, expert);
+        }
+
+        private void OnAttachExpertSponsor(IAsyncResult resp)
+        {
+            AsyncResult res = (AsyncResult)resp;
+            Func<ITriviaSponsor> del = (Func<ITriviaSponsor>)res.AsyncDelegate;
+            IExpert expert = (IExpert)resp.AsyncState;
+
+            if (_expertsSponsor == null)
+                _expertsSponsor = del.EndInvoke(resp);
+            ILease lease = (ILease)RemotingServices.GetLifetimeService(
+                                (MarshalByRefObject)expert);
+            lease.Register(_expertsSponsor);
+            OnAnswerReceived(69, "Attached sponsor to expert");
+        }
+
+        private void ReleaseExpertSponsor(IExpert expert)
+        {
+            ILease lease = (ILease)RemotingServices.GetLifetimeService(
+                                (MarshalByRefObject)expert);
+            if (_expertsSponsor != null)
+                lease.Unregister(_expertsSponsor);
+        }
+
+        #endregion
+
+        #region Expert registration and unregistration on server
+        public void RegisterAll()
+        {
+            lock (monitor)
+            {
+                // Begin registering the experts
+                Action<String, IExpert> registerAction = new Action<string, IExpert>(_server.Register);
+                foreach (IExpert expert in _myExperts)
+                {
+                    registerAction.BeginInvoke(
+                        expert.GetTheme(),
+                        expert,
+                        OnRegisterComplete,
+                        expert
+                    );
+                }
+            }
+        }
+
+        private void OnRegisterComplete(IAsyncResult resp)
+        {
+            AsyncResult res = (AsyncResult)resp;
+            Action<String, IExpert> registerAction = (Action<String, IExpert>)res.AsyncDelegate;
+            IExpert expert = (IExpert)resp.AsyncState;
+            try
+            {
+                registerAction.EndInvoke(resp);
+            }
+            catch (SocketException)
+            {
+                if (OnError != null)
+                {
+                    OnError(String.Format("Register failed for theme {0}.", expert.GetTheme()));
                 }
             }
         }
@@ -274,14 +305,34 @@ namespace TriviaExpert
                             expert.GetTheme(),
                             expert,
                             OnUnregisterComplete,
-                            null
+                            expert
                         );
                     }
                     _myExperts.Clear();
                 }
             }
 
-            ReleaseSponsor();
+            ReleaseServerSponsor();
         }
+
+        private void OnUnregisterComplete(IAsyncResult resp)
+        {
+            AsyncResult res = (AsyncResult)resp;
+            Action<String, IExpert> unregisterAction = (Action<String, IExpert>)res.AsyncDelegate;
+            IExpert expert = (IExpert)resp.AsyncState;
+            try
+            {
+                unregisterAction.EndInvoke(resp);
+                ReleaseExpertSponsor(expert);
+            }
+            catch (SocketException ex)
+            {
+                if (OnError != null)
+                {
+                    OnError(String.Format("Unregister failed for theme {0}.", (String)resp.AsyncState));
+                }
+            }
+        }
+        #endregion
     }
 }

@@ -17,7 +17,7 @@ namespace TriviaExpert
 {
     public partial class TriviaClientForm : Form
     {
-        private Client _client;
+        private IClient _client;
 
         public TriviaClientForm()
         {
@@ -38,7 +38,7 @@ namespace TriviaExpert
                 btnDisconnect.Enabled = true;
                 btnAsk.Enabled = true;
                 btnGetTheme.Enabled = true;
-                lblServerURL.Text = "Connected to: " + _client.ServerURL;
+                lblServerURL.Text = "Connected to: " + _client.GetServerUrl();
             }
             catch (SocketException)
             {
@@ -49,7 +49,7 @@ namespace TriviaExpert
 
         private void Disconnect()
         {
-            if (_client != null)
+            if (_client != null && _client.IsConnected())
             {
                 _client.UnregisterAll();
                 _client.Disconnect();
@@ -58,7 +58,7 @@ namespace TriviaExpert
             lstThemes.Items.Clear();
             rtbQuestions.Clear();
             rtbAnswers.Clear();
-            
+
             btnAsk.Enabled = false;
             btnGetTheme.Enabled = false;
             btnDisconnect.Enabled = false;
@@ -73,7 +73,7 @@ namespace TriviaExpert
             List<String> themes = xrep.GetThemes();
             foreach (string theme in themes)
             {
-                _client.AddExpert(theme);
+                _client.AddLocalExpert(theme);
             }
             _client.OnQuestionAnswered += OnExpertQuestionAnswered;
             _client.RegisterAll();
@@ -165,18 +165,12 @@ namespace TriviaExpert
         }
 
         private void TriviaClientForm_OnClosing(object sender, FormClosingEventArgs e)
-        {
-            Disconnect();
-        }
+        { Disconnect(); }
 
         private void btnConnect_Click(object sender, EventArgs e)
-        {
-            Connect();
-        }
+        { Connect(); }
 
         private void btnDisconnect_Click(object sender, EventArgs e)
-        {
-            Disconnect();
-        }
+        { Disconnect(); }
     }
 }
