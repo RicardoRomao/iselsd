@@ -29,7 +29,6 @@ namespace TriviaServer
         private readonly object monitor = new Object();
 
         #region Public parameterless constructor
-
         public Server()
         {
             _expertList = new Dictionary<String, List<IExpert>>();
@@ -46,7 +45,21 @@ namespace TriviaServer
             }
             SetNextServer();
         }
+        #endregion
 
+        #region Destructor for releasing resources namely unregister next server sponsor
+        public ~Server()
+        {
+            if (_nextServer != null && _serverSponsor != null)
+                ClearSponsor();
+            if (_expertList != null){
+                foreach(String theme in _expertList.Keys){
+                    if (_expertList[theme]!= null)
+                        _expertList[theme].Clear();
+                }
+                _expertList.Clear();
+            }
+        }
         #endregion
 
         #region Private methods
@@ -101,7 +114,6 @@ namespace TriviaServer
         #endregion
 
         #region Sponsor management
-
         private void SetSponsor()
         {
             Console.WriteLine("[{0}] - SENDING SPONSOR REQUEST.",_uId);
@@ -128,10 +140,15 @@ namespace TriviaServer
             }
         }
 
+        private void ClearSponsor()
+        {
+            Console.WriteLine("[{0}] - CANCELING NEXT SERVER SPONSOR.", _uId);
+            ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_nextServer);
+            lease.Register(_serverSponsor);
+        }
         #endregion
 
         #region Private methods for communication with other ring servers
-
         private void FowardRegistration(string uId, string theme, IExpert expert)
         {
                 try
@@ -176,11 +193,9 @@ namespace TriviaServer
             var invoker = (Action<string, string, IExpert>)asyncResult.AsyncDelegate;
             invoker.EndInvoke(result);
         }
-
         #endregion
 
         #region IRingServer Members
-
         public void Register(string uId, string theme, IExpert expert)
         {
             Console.WriteLine("[{0}] - Remote REGISTER: {1} - {2}", _uId, theme, uId);
@@ -213,11 +228,9 @@ namespace TriviaServer
                 asyncUnregister.BeginInvoke(uId, theme, expert, EndForwarding, null);
             }
         }
-
         #endregion
 
         #region IZoneServer Members
-
         public void Register(string theme, IExpert expert)
         {
             EnqueueExpert(theme, expert);
@@ -260,7 +273,6 @@ namespace TriviaServer
             Console.WriteLine("[{0}] - RECEIVED SPONSOR REQUEST", _uId);
             return new ServerSponsor(_uId,RENEW_TIME);
         }
-
         #endregion
 
         public override object InitializeLifetimeService()
