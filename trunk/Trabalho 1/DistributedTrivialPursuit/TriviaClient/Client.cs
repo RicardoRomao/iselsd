@@ -83,7 +83,7 @@ namespace TriviaExpert
             {
                 try
                 {
-                    _serverSponsor.setNotRenew();
+                    _serverSponsor.SetNotRenew();
                     ILease lease = (ILease)RemotingServices.GetLifetimeService((MarshalByRefObject)_server);
                     lease.Unregister(_serverSponsor);
                     _serverSponsor = null;

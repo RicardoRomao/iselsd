@@ -8,6 +8,6 @@ namespace Proxy
 {
     public interface ITriviaSponsor : ISponsor
     {
-        void setNotRenew();
+        void SetNotRenew();
     }
 }

@@ -21,7 +21,7 @@ namespace TriviaServer
 
         #region ITriviaSponsor Members
 
-        public void setNotRenew()
+        public void SetNotRenew()
         {
             _toRenew = false;
         }
