@@ -23,23 +23,6 @@ namespace TriviaExpert
             _data = XMLRepository.GetInstance(ConfigurationManager.AppSettings["DataSource"]);
         }
 
-        public String GetTheme()
-        {
-            return _theme;
-        }
-
-        public override object InitializeLifetimeService()
-        {
-            ILease lease = (ILease)base.InitializeLifetimeService();
-            if (lease.CurrentState == LeaseState.Initial)
-            {
-                lease.InitialLeaseTime = TimeSpan.FromSeconds(60);
-                lease.SponsorshipTimeout = TimeSpan.FromSeconds(0);
-                lease.RenewOnCallTime = TimeSpan.FromSeconds(30);
-            }
-            return lease;
-        }
-
         #region IExpert Members
 
         public event QuestionHandler OnQuestionAnswered;
@@ -49,9 +32,12 @@ namespace TriviaExpert
             String answer = _data.GetAnswer(keyWords, _theme);
             if (!String.IsNullOrEmpty(answer) && OnQuestionAnswered != null)
             {
+                ILease lease = (ILease)this.GetLifetimeService();
+                    
+
                 OnQuestionAnswered(this,
                                    string.Join(",", keyWords.ToArray()),
-                                   answer);
+                                   answer + ":" + lease.CurrentLeaseTime);
             }
             return answer;
         }
@@ -67,10 +53,27 @@ namespace TriviaExpert
             return ((Func<List<String>, string>)(iaR2.AsyncDelegate)).EndInvoke(iaR);
         }
 
+        public String GetTheme()
+        {
+            return _theme;
+        }
+
         public ITriviaSponsor GetSponsor()
         {
             return new ExpertSponsor(RENEW_TIME);
         }
         #endregion
+
+        public override object InitializeLifetimeService()
+        {
+            ILease lease = (ILease)base.InitializeLifetimeService();
+            if (lease.CurrentState == LeaseState.Initial)
+            {
+                lease.InitialLeaseTime = TimeSpan.FromSeconds(30);
+                lease.SponsorshipTimeout = TimeSpan.FromSeconds(10);
+                lease.RenewOnCallTime = TimeSpan.FromSeconds(10);
+            }
+            return lease;
+        }
     }
 }

@@ -8,22 +8,23 @@ namespace TriviaExpert
 {
     interface IClient
     {
+        event ErrorHandler OnError;
+        event QuestionHandler OnQuestionAnswered;
+        event ThemeHandler OnExpertsGetComplete;
+        event ResponseHandler OnAnswerReceived;
 
-        // TODO:
-        // Define the separation between Experts that belong to the Client
-        // and Experts that were given to the Client by the Server
+        void Connect();
+        void Disconnect();
 
-        List<String> GetThemes();
-        
-        IExpert CreateExpert(String theme);
-        List<IExpert> CreateExperts(List<String> themes);
-        
-        List<IExpert> GetExperts();
-        IExpert GetExpert(String theme);
-        
-        void RegisterExpert(String theme);
-        void UnregisterExpert(String theme);
+        void RegisterAll();
+        void UnregisterAll();
 
+        int GetQuestionCount();
+        string GetServerUrl();
+        bool IsConnected();
 
+        void AddLocalExpert(String theme);
+        void Ask(String theme, List<string> keyWords);
+        void GetExperts(String theme);
     }
 }
