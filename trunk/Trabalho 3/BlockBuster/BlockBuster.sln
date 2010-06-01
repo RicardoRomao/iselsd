@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "Interfaces\Interfaces.csproj", "{E27443A6-61E2-41B3-A17F-F3262593D56D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WSCinema", "WSCinema\WSCinema.csproj", "{A3F1180E-FAE3-48BD-A827-ECDAF22C288E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E27443A6-61E2-41B3-A17F-F3262593D56D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E27443A6-61E2-41B3-A17F-F3262593D56D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E27443A6-61E2-41B3-A17F-F3262593D56D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E27443A6-61E2-41B3-A17F-F3262593D56D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3F1180E-FAE3-48BD-A827-ECDAF22C288E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3F1180E-FAE3-48BD-A827-ECDAF22C288E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3F1180E-FAE3-48BD-A827-ECDAF22C288E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3F1180E-FAE3-48BD-A827-ECDAF22C288E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
