@@ -31,9 +31,17 @@ namespace WSCinema
         }
 
         [WebMethod]
-        public List<Movie> GetMoviesByPeriod(TimeSpan start, TimeSpan end)
+        public List<Movie> GetMoviesByPeriod(DateTime start, DateTime end)
         {
             return CinemaModel.Current.GetMovies(start, end).ToList();
+        }
+
+        [WebMethod]
+        public bool AddReservation(Reservation res)
+        {
+
+
+            throw new NotImplementedException();
         }
     }
 }

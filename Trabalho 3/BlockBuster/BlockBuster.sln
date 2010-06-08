@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CinemaService", "CinemaService\CinemaService.csproj", "{1DF48085-2171-4CE5-8148-510524F779C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CinemaModelServer", "CinemaModelServer\CinemaModelServer.csproj", "{5BDA63CC-7647-4FA2-AC4D-9E009FD29806}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "Interfaces\Interfaces.csproj", "{1FC98934-427E-4A9D-BD92-6C3336869F2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +35,14 @@ Global
 		{1DF48085-2171-4CE5-8148-510524F779C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DF48085-2171-4CE5-8148-510524F779C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DF48085-2171-4CE5-8148-510524F779C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BDA63CC-7647-4FA2-AC4D-9E009FD29806}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BDA63CC-7647-4FA2-AC4D-9E009FD29806}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BDA63CC-7647-4FA2-AC4D-9E009FD29806}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BDA63CC-7647-4FA2-AC4D-9E009FD29806}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FC98934-427E-4A9D-BD92-6C3336869F2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FC98934-427E-4A9D-BD92-6C3336869F2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FC98934-427E-4A9D-BD92-6C3336869F2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FC98934-427E-4A9D-BD92-6C3336869F2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

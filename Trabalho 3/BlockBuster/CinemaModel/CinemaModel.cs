@@ -102,14 +102,16 @@ namespace Model
         }
 
         //Returns a movie by id
-        private Movie GetMovie(int id) {
+        private Movie GetMovie(int id)
+        {
             if (_movies.ContainsKey(id))
                 return _movies[id];
             return null;
         }
 
         //Returns movies that contain at least one of the keywords provided
-        public IEnumerable<Movie> GetMovies(List<String> keywords) {
+        public IEnumerable<Movie> GetMovies(List<String> keywords)
+        {
             if (keywords == null) return _movies.Values;
             return _movies.Values.Where(m => keywords.Contains(m.Title));
         }
@@ -118,13 +120,13 @@ namespace Model
         public IEnumerable<Movie> GetMovies() { return GetMovies(null); }
 
         //Returns movies that have sessions within the given period
-        public IEnumerable<Movie> GetMovies(TimeSpan startTime, TimeSpan endTime)
+        public IEnumerable<Movie> GetMovies(DateTime startTime, DateTime endTime)
         {
             return _movies.Values.Where(m =>
-                    m.Sessions.Where(s =>
-                        s.StartTime.CompareTo(startTime) >= 0  &&
+                    m.Sessions.Any(s =>
+                        s.StartTime.CompareTo(startTime) >= 0 &&
                         s.StartTime.CompareTo(endTime) <= 0
-                    ).Count() > 0
+                    )
             );
         }
 
