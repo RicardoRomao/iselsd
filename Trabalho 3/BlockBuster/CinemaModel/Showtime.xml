@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<contents>
+  <rooms>
+    <room id="1" capacity="20"/>
+    <room id="2" capacity="30"/>
+  </rooms>
+  <movies>
+    <movie id="1" title="Astro Boy">
+      Passado no cenário futurista de Metro City, «Astro Boy» é um filme sobre um jovem robot com poderes extraordinários, criado por um cientista. Alimentado pela energia positiva "azul", Astro Boy possui uma força hercúlea, visão raio-x, velocidade inacreditável e capacidade para voar. Numa viagem em busca da aceitação, Astro Boy vai aprender as alegrias e emoções de ser humano e ganhar força para abraçar o seu destino. Quando descobre que os seus amigos e família estão em perigo, Astro Boy reúne todos os seus super poderes e regressa a Metro City, esforçando-se corajosamente para salvar tudo aquilo que é mais precioso para si e, ao mesmo tempo, perceber o que é necessário para ser um herói.
+    </movie>
+    <movie id="2" title="Um Funeral à Chuva">
+      Um grupo de antigos estudantes universitários reencontra-se na cidade onde havia estudado, devido à morte de um deles. Na obrigação de satisfazer o último desejo deste, o grupo inicia uma jornada de auto-descoberta sobre a essência da amizade verdadeira. Contudo, há dez anos que não se viam...
+    </movie>
+    <movie id="3" title="Toy Story 1 - Os Rivais">
+      Eles são brinquedos, eles falam – pelo menos quando não há pessoas à sua volta – e estão de volta… Woody, alto e magro, um cowboy de quem todos gostam, e Buzzlightyear, o destemido ranger do espaço. A dupla comicamente dissonante aprende, finalmente, a pôr de lado as suas diferenças, quando o destino os separa do seu dono Andy, e se encontram numa missão hilariante, recheada de aventura, onde a única forma de sobrevivência passa por formar uma incómoda aliança.
+    </movie>
+    <movie id="4" title="Pesadelo em Elm Street">
+      O maior clássico de terror de todos os tempos, está de volta. Mas desta vez é o actor Jackie Earle Haley quem encarna a mítica personagem de chapéu e garras afiadas, Freddy Krueger. A nova história anda à volta dos adolescentes perseguidos por Freddy Krueger, o assassino horrivelmente desfigurado que os aterroriza durante os sonhos.
+    </movie>
+    <movie id="5" title="A Era dos Ignorantes">
+      Jean-Marc Leblanc (Marc Labrèche) é um homem com uma vida insignificante, desprezado por todos que, sempre que pode, foge da realidade para uma vida cheia de coisas excitantes. Mas estas, infelizmente, apenas existem na sua imaginação. Nos seus sonhos ele é um cavaleiro, uma estrela de rock, um actor de cinema, um escritor célebre. E sempre com um imenso poder sobre o sexo oposto. Um dia, farto de viver uma existência adulterada, decide mudar de atitude e dar uma nova hipótese à sua vida real.
+    </movie>
+    <movie id="6" title="Ex-Mulher Procura-se">
+      Milo Boyd é um bounty hunter, ou seja, tem como profissão capturar fugitivos à lei em troca de uma recompensa monetária. Um dia, a sua missão é encontrar e prender a repórter Nicole Hurley, a sua ex-mulher... Quando ele pensava que não haveria tarefa mais fácil, Nicole diz-lhe que está a seguir um importante caso de homicídio, e então Milo percebe que as coisas não vão ser bem como ele tinha planeado. A relação de ambos continua na mesma, até ao momento em que têm de se unir se quiserem viver...
+    </movie>
+    <movie id="7" title="A Ilha de Impy">
+      Titiwoo é uma pequena ilha vulcânica no meio do oceano. É aqui que o, pretenso homem da Renascença, zoólogo e cientista indisciplinado, Professor Horatio Tiberton vive e trabalha. Juntamente com o filho adoptado do professor, Tim, um ilustre bando de criaturas da ilha assiste à escola idiossincrásica de línguas de Tibberton: Ping, o pinguim; Monty, o lagarto monitor; Shoe, o pássaro e Solomon, o elefante-marinho. A dona da casa e da escola de Tibberton é Peg, a senhora-porca. A vida é feliz para todos os habitantes da ilha. Até que, um dia, um iceberg que tem lá dentro ovos pré-históricos congelados dá à costa e, dos ovos emerge uma estranha criatura verde: é Impy, um dinossauro da idade do gelo. A partir deste momento, a pacata vida dos habitantes da ilha acaba. Quando as novidades sobre Impy chegam ao Rei Pumponnel, que baniu Tibberton para os Mares do Sul, ele faz-se à vela imediatamente, determinado a caçar Impy e adicioná-lo à sua colecção de troféus. Mas Pumponell não conta com os habitantes e as criaturas de Titiwoo. É nessa altura que começa uma perigosa caçada, na qual o grupo de amigos de Tibberton luta para salvar Impy da mira de Pumponell a qualquer custo.
+    </movie>
+    <movie id="8" title="Como Treinares o Teu Dragão">
+      "Como Treinares o Teu Dragão" passa-se num mundo cheio de Vikings musculados e dragões selvagens. Um adolescente esquelético e desajeitado, filho de Viking, decide matar um dragão para se tornar um herói, provando o seu valor à tribo e ao pai. Mas quando ele se torna amigo do dragão o seu mundo vira-se de cabeça para baixo.
+    </movie>
+    <movie id="9" title="A Princesa e o Sapo">
+      Uma comédia passada na cidade de Nova Orleães, dos criadores da "A Pequena Sereia" e "Aladin", que é uma versão moderna de um conto clássico, que conta com uma rapariga chamada Tiana, um príncipe sapo que tenta desesperadamente voltar a ser humano e um beijo fatídico que os levará numa hilariante aventura através dos fascinantes riachos do Louisiana.
+    </movie>
+  </movies>
+  <sessions>
+    <session id="11H-R1" startTime="11:00" movieId="1" roomId="1"/>
+    <session id="13H-R2" startTime="13:00" movieId="2" roomId="2"/>
+    <session id="15H-R1" startTime="15:00" movieId="3" roomId="1"/>
+    <session id="17H-R2" startTime="17:00" movieId="4" roomId="2"/>
+    <session id="19H-R1" startTime="19:00" movieId="5" roomId="1"/>
+    <session id="21H-R2" startTime="21:00" movieId="6" roomId="2"/>
+    <session id="23H-R1" startTime="23:00" movieId="7" roomId="1"/>
+    <session id="01H-R2" startTime="01:00" movieId="8" roomId="2"/>
+  </sessions>
+</contents>  
