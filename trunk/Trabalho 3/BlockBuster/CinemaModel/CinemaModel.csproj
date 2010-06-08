@@ -8,7 +8,7 @@
     <ProjectGuid>{B2E8C6EC-50C3-4D6B-875E-917793E3242A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CinemaModel</RootNamespace>
+    <RootNamespace>Model</RootNamespace>
     <AssemblyName>CinemaModel</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

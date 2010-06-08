@@ -5,58 +5,7 @@ using System.Text;
 
 namespace Entities
 {
-    public class Movie
-    {
-        public int Id { get; private set; }
-        public String Title { get; private set; }
-        public String Desc { get; private set; }
-        public List<MovieSession> Sessions { get; private set; }
-
-        public Movie(int id, String title, String desc)
-        {
-            Id = id;
-            Title = title;
-            Desc = desc;
-        }
-
-        public void AddSession(MovieSession session)
-        {
-            if (Sessions == null) Sessions = new List<MovieSession>();
-            Sessions.Add(session);
-        }
-    }
-
-    public class MovieSession
-    {
-        public String Id { get; private set; }
-        public DateTime StartTime { get; private set; }
-        public int MovieId { get; private set; }
-        public int RoomId { get; private set; }
-        public Room Room { get; private set; }
-
-        public MovieSession(String id, DateTime startTime, int movieId, int roomId)
-        {
-            Id = id;
-            StartTime = startTime;
-            MovieId = movieId;
-            RoomId = roomId;
-        }
-
-        public void SetRoom(Room room) { Room = room; }
-    }
-
-    public class Room
-    {
-        public int Num { get; private set; }
-        public int Capacity { get; private set; }
-
-        public Room(int num, int capacity)
-        {
-            Num = num;
-            Capacity = capacity;
-        }
-    }
-
+    
     public class Reservation
     {
         public Guid Code { get; private set; }

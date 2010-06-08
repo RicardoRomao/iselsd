@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://sd.isel.pt/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://sd.isel.pt/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://sd.isel.pt/">
+      <s:element name="GetMovies">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetMoviesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetMoviesResult" type="tns:ArrayOfMovie" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfMovie">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Movie" nillable="true" type="tns:Movie" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Movie">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Title" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Desc" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Sessions" type="tns:ArrayOfMovieSession" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfMovieSession">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="MovieSession" nillable="true" type="tns:MovieSession" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="MovieSession">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Id" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="StartTime" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="MovieId" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="RoomId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Room" type="tns:Room" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Room">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Num" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Capacity" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetMoviesByTitle">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="keyWords" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetMoviesByTitleResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetMoviesByTitleResult" type="tns:ArrayOfMovie" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetMoviesByPeriod">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="start" type="tns:TimeSpan" />
+            <s:element minOccurs="1" maxOccurs="1" name="end" type="tns:TimeSpan" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="TimeSpan" />
+      <s:element name="GetMoviesByPeriodResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetMoviesByPeriodResult" type="tns:ArrayOfMovie" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetMoviesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetMovies" />
+  </wsdl:message>
+  <wsdl:message name="GetMoviesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetMoviesResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMoviesByTitleSoapIn">
+    <wsdl:part name="parameters" element="tns:GetMoviesByTitle" />
+  </wsdl:message>
+  <wsdl:message name="GetMoviesByTitleSoapOut">
+    <wsdl:part name="parameters" element="tns:GetMoviesByTitleResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMoviesByPeriodSoapIn">
+    <wsdl:part name="parameters" element="tns:GetMoviesByPeriod" />
+  </wsdl:message>
+  <wsdl:message name="GetMoviesByPeriodSoapOut">
+    <wsdl:part name="parameters" element="tns:GetMoviesByPeriodResponse" />
+  </wsdl:message>
+  <wsdl:portType name="CinemaServiceSoap">
+    <wsdl:operation name="GetMovies">
+      <wsdl:input message="tns:GetMoviesSoapIn" />
+      <wsdl:output message="tns:GetMoviesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMoviesByTitle">
+      <wsdl:input message="tns:GetMoviesByTitleSoapIn" />
+      <wsdl:output message="tns:GetMoviesByTitleSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMoviesByPeriod">
+      <wsdl:input message="tns:GetMoviesByPeriodSoapIn" />
+      <wsdl:output message="tns:GetMoviesByPeriodSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CinemaServiceSoap" type="tns:CinemaServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetMovies">
+      <soap:operation soapAction="http://sd.isel.pt/GetMovies" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMoviesByTitle">
+      <soap:operation soapAction="http://sd.isel.pt/GetMoviesByTitle" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMoviesByPeriod">
+      <soap:operation soapAction="http://sd.isel.pt/GetMoviesByPeriod" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="CinemaServiceSoap12" type="tns:CinemaServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetMovies">
+      <soap12:operation soapAction="http://sd.isel.pt/GetMovies" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMoviesByTitle">
+      <soap12:operation soapAction="http://sd.isel.pt/GetMoviesByTitle" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMoviesByPeriod">
+      <soap12:operation soapAction="http://sd.isel.pt/GetMoviesByPeriod" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="CinemaService">
+    <wsdl:port name="CinemaServiceSoap" binding="tns:CinemaServiceSoap">
+      <soap:address location="http://localhost:3354/WSCinema.asmx" />
+    </wsdl:port>
+    <wsdl:port name="CinemaServiceSoap12" binding="tns:CinemaServiceSoap12">
+      <soap12:address location="http://localhost:3354/WSCinema.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
