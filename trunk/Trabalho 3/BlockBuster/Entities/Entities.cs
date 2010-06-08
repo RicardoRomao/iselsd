@@ -5,14 +5,6 @@ using System.Text;
 
 namespace Entities
 {
-    
-    public class Reservation
-    {
-        public Guid Code { get; private set; }
-        public int Seats { get; private set; }
-        public String Name { get; set; }
-        MovieSession _session;
-    }
 
     public class TheaterRoom
     {
@@ -56,6 +48,7 @@ namespace Entities
             }
             return false;
         }
+
 
         public bool RemoveReservation(String sessionCode, Guid code)
         {
