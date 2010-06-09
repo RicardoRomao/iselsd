@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2010 (http://www.altova.com) by Ricardo Neto (Netpat) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!-- Definição do tipo que representa uma sala de cinema -->
+	<xs:complexType name="t_room">
+		<xs:attribute name="id" type="xs:integer"/>
+		<xs:attribute name="capacity" type="xs:integer"/>
+	</xs:complexType>
+	<!-- Definição do tipo que representa um contentor de salas -->
+	<xs:complexType name="t_rooms">
+		<xs:sequence minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="room" type="t_room"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Definição do tipo que representa um filme -->
+	<xs:complexType name="t_movie">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="id" type="xs:integer"/>
+				<xs:attribute name="title" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<!-- Definição do tipo que representa um contentor de filmes -->
+	<xs:complexType name="t_movies">
+		<xs:sequence minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="movie" type="t_movie"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Definição do tipo que representa uma sessão -->
+	<xs:complexType name="t_session">
+		<xs:attribute name="id" type="xs:string"/>
+		<xs:attribute name="startTime" type="xs:time"/>
+		<xs:attribute name="movieId" type="xs:int"/>
+		<xs:attribute name="roomId" type="xs:int"/>
+	</xs:complexType>
+	<!-- Definição do tipo que representa um contentor de sessões -->
+	<xs:complexType name="t_sessions">
+		<xs:sequence minOccurs="1" maxOccurs="unbounded">
+			<xs:element name="session" type="t_session">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Definição do root element -->
+	<xs:element name="contents">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="rooms" type="t_rooms" minOccurs="1" maxOccurs="1">
+					<xs:unique name="un_roomId">
+						<xs:selector xpath="*"/>
+						<xs:field xpath="@id"/>
+					</xs:unique>
+				</xs:element>
+				<xs:element name="movies" type="t_movies" minOccurs="1" maxOccurs="1">
+					<xs:unique name="un_movieId">
+						<xs:selector xpath="*"/>
+						<xs:field xpath="@id"/>
+					</xs:unique>
+				</xs:element>
+				<xs:element name="sessions" type="t_sessions" minOccurs="1" maxOccurs="1">
+					<xs:unique name="un_sessionId">
+						<xs:selector xpath="*"/>
+						<xs:field xpath="@id"/>
+					</xs:unique>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+		<xs:key name="pk_room">
+			<xs:selector xpath="rooms/room"/>
+			<xs:field xpath="@id"/>
+		</xs:key>
+		<xs:key name="pk_movie">
+			<xs:selector xpath="movies/movie"/>
+			<xs:field xpath="@id"/>
+		</xs:key>
+		<xs:keyref refer="pk_movie" name="fk_movie">
+			<xs:selector xpath="sessions/session"/>
+			<xs:field xpath="@movieId"/>
+		</xs:keyref>
+		<xs:keyref refer="pk_room" name="fk_room">
+			<xs:selector xpath="sessions/session"/>
+			<xs:field xpath="@roomId"/>
+		</xs:keyref>
+	</xs:element>
+</xs:schema>

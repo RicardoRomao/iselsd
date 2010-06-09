@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://sd.deetc.isel.pt/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://sd.deetc.isel.pt/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://sd.deetc.isel.pt/">
+      <s:element name="GetCinemas">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetCinemasResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCinemasResult" type="tns:ArrayOfCinemaSvc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfCinemaSvc">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="CinemaSvc" nillable="true" type="tns:CinemaSvc" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="CinemaSvc">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Url" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="RegisterCinema">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="url" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegisterCinemaResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="UnregisterCinema">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UnregisterCinemaResponse">
+        <s:complexType />
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetCinemasSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCinemas" />
+  </wsdl:message>
+  <wsdl:message name="GetCinemasSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCinemasResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegisterCinemaSoapIn">
+    <wsdl:part name="parameters" element="tns:RegisterCinema" />
+  </wsdl:message>
+  <wsdl:message name="RegisterCinemaSoapOut">
+    <wsdl:part name="parameters" element="tns:RegisterCinemaResponse" />
+  </wsdl:message>
+  <wsdl:message name="UnregisterCinemaSoapIn">
+    <wsdl:part name="parameters" element="tns:UnregisterCinema" />
+  </wsdl:message>
+  <wsdl:message name="UnregisterCinemaSoapOut">
+    <wsdl:part name="parameters" element="tns:UnregisterCinemaResponse" />
+  </wsdl:message>
+  <wsdl:portType name="WSBrokerSoap">
+    <wsdl:operation name="GetCinemas">
+      <wsdl:input message="tns:GetCinemasSoapIn" />
+      <wsdl:output message="tns:GetCinemasSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RegisterCinema">
+      <wsdl:input message="tns:RegisterCinemaSoapIn" />
+      <wsdl:output message="tns:RegisterCinemaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UnregisterCinema">
+      <wsdl:input message="tns:UnregisterCinemaSoapIn" />
+      <wsdl:output message="tns:UnregisterCinemaSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WSBrokerSoap" type="tns:WSBrokerSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetCinemas">
+      <soap:operation soapAction="http://sd.deetc.isel.pt/GetCinemas" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterCinema">
+      <soap:operation soapAction="http://sd.deetc.isel.pt/RegisterCinema" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UnregisterCinema">
+      <soap:operation soapAction="http://sd.deetc.isel.pt/UnregisterCinema" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WSBrokerSoap12" type="tns:WSBrokerSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetCinemas">
+      <soap12:operation soapAction="http://sd.deetc.isel.pt/GetCinemas" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RegisterCinema">
+      <soap12:operation soapAction="http://sd.deetc.isel.pt/RegisterCinema" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UnregisterCinema">
+      <soap12:operation soapAction="http://sd.deetc.isel.pt/UnregisterCinema" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WSBroker">
+    <wsdl:port name="WSBrokerSoap" binding="tns:WSBrokerSoap">
+      <soap:address location="http://localhost/WSBroker/WSBroker.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WSBrokerSoap12" binding="tns:WSBrokerSoap12">
+      <soap12:address location="http://localhost/WSBroker/WSBroker.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
