@@ -8,6 +8,7 @@ namespace Interfaces
     public interface ICinemaModelServer
     {
         Guid AddReservation(String name, String sessionId, int seats);
-        void RemoveReservation(Guid code);
+        bool RemoveReservation(Guid code);
+        int GetTotalReservations(String sessionId);
     }
 }

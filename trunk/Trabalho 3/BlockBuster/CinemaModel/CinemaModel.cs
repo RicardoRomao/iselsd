@@ -130,5 +130,12 @@ namespace Model
             );
         }
 
+        //Returns the total number of seats of a room by session id
+        public int GetRoomCapacity(String sessionId)
+        {
+            if (_sessions.ContainsKey(sessionId))
+                return _sessions[sessionId].Room.Capacity;
+            return -1;
+        }
     }
 }
