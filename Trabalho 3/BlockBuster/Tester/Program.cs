@@ -41,13 +41,13 @@ namespace Tester
 
         static void Main(string[] args)
         {
-            CinemaService cinema = new CinemaService();
-            cinema.GetMoviesCompleted += GetMoviesCompleted;
+            //CinemaService cinema = new CinemaService();
+            //cinema.GetMoviesCompleted += GetMoviesCompleted;
             //cinema.GetMoviesAsync();
 
-            cinema.GetMoviesByPeriodCompleted += GetMoviesByPeriodCompleted;
-            cinema.GetMoviesByPeriodAsync(DateTime.Parse("12:00:00"),DateTime.Parse("13:00:00"));
-            mre.WaitOne();
+            //cinema.GetMoviesByPeriodCompleted += GetMoviesByPeriodCompleted;
+            //cinema.GetMoviesByPeriodAsync(DateTime.Parse("12:00:00"),DateTime.Parse("13:00:00"));
+            //mre.WaitOne();
 
         }
     }

@@ -14,12 +14,14 @@ namespace CinemaModelServer
 
         static readonly string _source = ConfigurationSettings.AppSettings["datasource"];
 
+        public Server() { Console.WriteLine("Constructor"); }
+
         #region ICinemaModelServer Members
 
         public Guid AddReservation(string name, string sessionId, int seats)
         {
             XDocument doc = XDocument.Load(_source, LoadOptions.None);
-            Guid guid = new Guid();
+            Guid guid = Guid.NewGuid();
             doc.Root.Add(BuildReservation(name, sessionId, seats, guid));
             doc.Save(_source);
             return guid;
@@ -28,15 +30,25 @@ namespace CinemaModelServer
         public bool RemoveReservation(Guid code)
         {
             XDocument doc = XDocument.Load(_source, LoadOptions.None);
-            foreach (XElement e in doc.Root.Descendants()){
-                if (e.Attribute("code").Value.Equals(code.ToString()))
-                {
-                    e.Remove();
-                    doc.Save(_source);
-                    return true;
-                }
+            
+            var res = doc.Root.Descendants().Where(e =>
+                e.Attribute("code").Value.Equals(code.ToString())
+            );
+            if (res.ToList().Count > 0)
+            {
+                res.Remove();
+                doc.Save(_source);
+                return true;
             }
             return false;
+        }
+
+        public int GetTotalReservations(String sessionId)
+        {
+            XDocument doc = XDocument.Load(_source, LoadOptions.None);
+            return doc.Root.Descendants().Count(e =>
+                e.Attribute("sessionId").Value.Equals(sessionId)
+            );
         }
 
         #endregion
@@ -50,6 +62,5 @@ namespace CinemaModelServer
             ret.SetAttributeValue("seats", seats);
             return ret;
         }
-
     }
 }

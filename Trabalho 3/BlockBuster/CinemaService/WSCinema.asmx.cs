@@ -5,6 +5,9 @@ using System.Web;
 using System.Web.Services;
 using Entities;
 using Model;
+using System.Runtime.Remoting;
+using System.Configuration;
+using Interfaces;
 
 namespace WSCinema
 {
@@ -18,6 +21,29 @@ namespace WSCinema
     // [System.Web.Script.Services.ScriptService]
     public class CinemaService : System.Web.Services.WebService
     {
+
+        private static ICinemaModelServer _server;
+
+        private static ICinemaModelServer Server
+        {
+            get
+            {
+                if (_server == null)
+                {
+                    WellKnownClientTypeEntry[] entries =
+                        RemotingConfiguration.GetRegisteredWellKnownClientTypes();
+                    _server = (ICinemaModelServer)Activator.GetObject(
+                        entries[0].ObjectType, entries[0].ObjectUrl);
+                }
+                return _server;
+            }
+        }
+
+        static CinemaService()
+        {
+            RemotingConfiguration.Configure(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile, false);
+        }
+
         [WebMethod]
         public List<Movie> GetMovies()
         {
@@ -37,11 +63,22 @@ namespace WSCinema
         }
 
         [WebMethod]
-        public bool AddReservation(Reservation res)
+        public Guid AddReservation(string name, string sessionId, int seats)
         {
+            int roomCapacity = CinemaModel.Current.GetRoomCapacity(sessionId);
+            int sessionReservations = Server.GetTotalReservations(sessionId);
 
+            if ((sessionReservations + seats <= roomCapacity) && roomCapacity > 0)
+            {
+                return Server.AddReservation(name, sessionId, seats);
+            }
+            return Guid.Empty;
+        }
 
-            throw new NotImplementedException();
+        [WebMethod]
+        public bool RemoveReservation(Guid code)
+        {
+            return Server.RemoveReservation(code);
         }
     }
 }

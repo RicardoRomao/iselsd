@@ -72,6 +72,10 @@
       <Project>{24F774BC-5054-4261-B459-A7CFF1CE7697}</Project>
       <Name>Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
+      <Project>{1FC98934-427E-4A9D-BD92-6C3336869F2A}</Project>
+      <Name>Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
