@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Configuration;
 using System.Runtime.Remoting;
 
-namespace CinemaReservationServer
+namespace BrokerCinemaServer
 {
-    
-    class ServerApp{
-
+    class ServerApp
+    {
         public static void Main(String[] args)
         {
-            Console.WriteLine(".: Starting Cinema Reservation Server :.");
+            Console.WriteLine(".: Starting Broker Cinema Server :.");
             RemotingConfiguration.Configure(
                 AppDomain.CurrentDomain.SetupInformation.ConfigurationFile,
                 false
@@ -22,6 +20,5 @@ namespace CinemaReservationServer
             Console.WriteLine("Press Enter to stop server.");
             Console.ReadLine();
         }
-
     }
 }

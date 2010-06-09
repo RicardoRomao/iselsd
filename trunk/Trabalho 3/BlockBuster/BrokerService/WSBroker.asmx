@@ -1,0 +1,1 @@
+﻿<%@ WebService Language="C#" CodeBehind="WSBroker.asmx.cs" Class="BrokerService.WSBroker" %>

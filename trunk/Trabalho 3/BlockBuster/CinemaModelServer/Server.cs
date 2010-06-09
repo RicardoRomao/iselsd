@@ -7,12 +7,12 @@ using Interfaces;
 using System.Configuration;
 using System.Xml.Linq;
 
-namespace CinemaModelServer
+namespace CinemaReservationServer
 {
     public class Server : MarshalByRefObject, ICinemaModelServer
     {
 
-        static readonly string _source = ConfigurationSettings.AppSettings["datasource"];
+        static readonly string _source = ConfigurationSettings.AppSettings["dataSource"];
 
         public Server() { }
 

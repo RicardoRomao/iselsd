@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contents xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Reservations.xsd">
+	<reservation code="2eaab201-af12-451e-bfad-3c901b2fc9a3" name="Zé Manel Pirata" sessionId="13H-R2" seats="20"/>
+	<reservation code="7e6ad399-5dee-4310-8c13-88ec740dd0ae" name="Carlos Lopes" sessionId="13H-R2" seats="10"/>
+</contents>

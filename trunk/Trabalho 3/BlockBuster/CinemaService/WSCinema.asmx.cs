@@ -25,7 +25,6 @@ namespace WSCinema
     [System.ComponentModel.ToolboxItem(false)]
     public class CinemaService : System.Web.Services.WebService
     {
-
         private static ICinemaModelServer _server;
 
         private new static ICinemaModelServer Server

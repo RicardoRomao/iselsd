@@ -109,7 +109,9 @@ namespace Model
         public IEnumerable<Movie> GetMovies(List<String> keywords)
         {
             if (keywords == null) return _movies.Values;
-            return _movies.Values.Where(m => keywords.Contains(m.Title));
+            keywords = keywords.ConvertAll(s => s.ToUpper());
+            return _movies.Values.Where(m => m.Title.ToUpper().Split(' ').Any(
+                        t => keywords.Contains(t)));
         }
 
         //Returns all movies appearing in this cinema
