@@ -11,13 +11,12 @@ namespace Model
     public class CinemaModel
     {
         static readonly string _source = ConfigurationSettings.AppSettings["datasource"];
+        
         private Dictionary<int, Movie> _movies;
         private Dictionary<int, Room> _rooms;
         private Dictionary<string, MovieSession> _sessions;
 
         private static CinemaModel current;
-
-        private CinemaModel() { Init(); }
 
         public static CinemaModel Current
         {
@@ -29,6 +28,9 @@ namespace Model
             }
         }
 
+        private CinemaModel() { Init(); }
+
+        #region Private Operations
         private void Init()
         {
             XDocument doc = XDocument.Load(_source, LoadOptions.None);
@@ -100,15 +102,9 @@ namespace Model
             }
             return this;
         }
+        #endregion
 
-        //Returns a movie by id
-        private Movie GetMovie(int id)
-        {
-            if (_movies.ContainsKey(id))
-                return _movies[id];
-            return null;
-        }
-
+        #region Public Operations
         //Returns movies that contain at least one of the keywords provided
         public IEnumerable<Movie> GetMovies(List<String> keywords)
         {
@@ -123,7 +119,7 @@ namespace Model
         public IEnumerable<Movie> GetMovies(DateTime startTime, DateTime endTime)
         {
             return _movies.Values.Where(m =>
-                    m.Sessions.Any(s =>
+                    m.Sessions != null && m.Sessions.Any(s =>
                         s.StartTime.CompareTo(startTime) >= 0 &&
                         s.StartTime.CompareTo(endTime) <= 0
                     )
@@ -137,5 +133,6 @@ namespace Model
                 return _sessions[sessionId].Room.Capacity;
             return -1;
         }
+        #endregion
     }
 }

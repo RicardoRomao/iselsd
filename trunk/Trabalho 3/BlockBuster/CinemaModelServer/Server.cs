@@ -7,14 +7,14 @@ using Interfaces;
 using System.Configuration;
 using System.Xml.Linq;
 
-namespace CinemaModelServer 
+namespace CinemaModelServer
 {
     public class Server : MarshalByRefObject, ICinemaModelServer
     {
 
         static readonly string _source = ConfigurationSettings.AppSettings["datasource"];
 
-        public Server() { Console.WriteLine("Constructor"); }
+        public Server() { }
 
         #region ICinemaModelServer Members
 
@@ -30,7 +30,7 @@ namespace CinemaModelServer
         public bool RemoveReservation(Guid code)
         {
             XDocument doc = XDocument.Load(_source, LoadOptions.None);
-            
+
             var res = doc.Root.Descendants().Where(e =>
                 e.Attribute("code").Value.Equals(code.ToString())
             );
@@ -46,9 +46,12 @@ namespace CinemaModelServer
         public int GetTotalReservations(String sessionId)
         {
             XDocument doc = XDocument.Load(_source, LoadOptions.None);
-            return doc.Root.Descendants().Count(e =>
-                e.Attribute("sessionId").Value.Equals(sessionId)
-            );
+            int total = 0;
+            foreach (XElement e in doc.Root.Descendants().Where
+                        (e => e.Attribute("sessionId").Value.Equals(sessionId))
+                    )
+                total += Int32.Parse(e.Attribute("seats").Value);
+            return total;
         }
 
         #endregion
