@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2010 (http://www.altova.com) by Ricardo Neto (Netpat) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<!-- Definição do elemento que representa um cinema -->
+	<xs:complexType name="t_cinema">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="url" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<!-- Definição do contentor de cinemas -->
+	<xs:element name="cinemas">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="cinema" type="t_cinema" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+		<xs:key name="un_name">
+			<xs:selector xpath="cinema"/>
+			<xs:field xpath="name"/>
+		</xs:key>
+	</xs:element>
+	
+</xs:schema>
