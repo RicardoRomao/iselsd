@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cinemas xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Cinemas.xsd">
+	<cinema>
+		<name>BBZ - BlockBusterZambujeira</name>
+		<url>http://localhost/BBZ/WSCinema.asmx</url>
+	</cinema>
+	<cinema>
+		<name>BBC - BlockBusterCalifornia</name>
+		<url>http://localhost/BBC/WSCinema.asmx</url>
+	</cinema>
+  <cinema>
+    <name>BBS - BlockBusterSidney</name>
+    <url>http://localhost/BBS/WSCinema.asmx</url>
+  </cinema>
+</cinemas>
