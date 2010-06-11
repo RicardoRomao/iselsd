@@ -45,11 +45,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Movie.cs" />
-    <Compile Include="MovieSession.cs" />
+    <Compile Include="Concrete\CinemaRegistry.cs" />
+    <Compile Include="Interfaces\IBrokerRegistryServer.cs" />
+    <Compile Include="Interfaces\ICinemaReservationServer.cs" />
+    <Compile Include="Interfaces\IWSBroker.cs" />
+    <Compile Include="Interfaces\IWSCinema.cs" />
+    <Compile Include="Concrete\Movie.cs" />
+    <Compile Include="Concrete\MovieSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reservation.cs" />
-    <Compile Include="Room.cs" />
+    <Compile Include="Concrete\Reservation.cs" />
+    <Compile Include="Concrete\Room.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

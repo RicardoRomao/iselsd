@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using BrokerApplication.sd.deetc.isel.pt;
+using BrokerApplication.BlockBusterBroker;
 
 namespace BrokerApplication
 {
@@ -17,7 +17,8 @@ namespace BrokerApplication
 		public MainForm()
 		{
 			InitializeComponent();
-			svc = new WSBroker();
+            svc = new WSBroker();
+            
 		}
 
 		private void btnAdd_Click(object sender, EventArgs e)
@@ -40,9 +41,9 @@ namespace BrokerApplication
 		{
 			if (!e.Cancelled && e.Error == null)
 			{
-				CinemaSvc[] cinemas = e.Result;
+				CinemaRegistry[] cinemas = e.Result;
 				lstCinemas.BeginUpdate();
-				foreach (CinemaSvc cinema in cinemas)
+				foreach (CinemaRegistry cinema in cinemas)
 				{
 					lstCinemas.Items.Add(cinema.Name);
 				}

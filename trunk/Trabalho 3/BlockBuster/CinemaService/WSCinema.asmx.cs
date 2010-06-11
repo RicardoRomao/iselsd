@@ -1,50 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Services;
-using Entities;
 using Model;
 using System.Runtime.Remoting;
-using System.Configuration;
-using Interfaces;
+using Entities;
 using System.Web.Services.Protocols;
-using System.Xml.Linq;
 using System.Xml;
-using System.Net;
 using System.Net.Sockets;
 
 namespace WSCinema
 {
     /// <summary>
-    /// BlockBusterCinema web service providing information on 
+    /// BlockBusterCinema web service that provides information on 
     /// movies currently showing and reservations capability
     /// </summary>
-    [WebService(Namespace = "http://sd.isel.pt/")]
+    [WebService(Namespace = "http://sd.deetc.isel.pt/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
-    public class CinemaService : System.Web.Services.WebService
+    public class WSCinema : System.Web.Services.WebService, IWSCinema
     {
-        private static ICinemaModelServer _server;
+        private readonly Object _monitor = new Object();
+        private ICinemaReservationServer _server;
 
-        private new static ICinemaModelServer Server
+        private new ICinemaReservationServer Server
         {
             get
             {
-                if (_server == null)
+                lock (_monitor)
                 {
-                    WellKnownClientTypeEntry[] entries =
-                        RemotingConfiguration.GetRegisteredWellKnownClientTypes();
-                    _server = (ICinemaModelServer)Activator.GetObject(
-                        entries[0].ObjectType, entries[0].ObjectUrl);
+                    if (_server == null)
+                    {
+                        WellKnownClientTypeEntry[] entries =
+                            RemotingConfiguration.GetRegisteredWellKnownClientTypes();
+                        _server = (ICinemaReservationServer)Activator.GetObject(
+                            entries[0].ObjectType, entries[0].ObjectUrl);
+                    }
                 }
                 return _server;
             }
         }
 
-        static CinemaService()
+        static WSCinema()
         {
             RemotingConfiguration.Configure(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile, false);
+
         }
 
         #region Movies/Sessions Operations
@@ -69,19 +69,19 @@ namespace WSCinema
 
         #region Reservations Operations
         [WebMethod(Description = "Adds a reservation to a movie session.\n" +
-            "Returns an empty Guid if no more seats are available.")]
+            "Returns an empty Guid if no more seats are available.\n" +
+            "Throws SoapException if sessionId is invalid or " +
+            "reservation server is down.")]
         public Guid AddReservation(string name, string sessionId, int seats)
         {
+            int roomCapacity = CinemaModel.Current.GetRoomCapacity(sessionId);
+            if (roomCapacity == -1)
+                throw new SoapException("SessionID not Valid",
+                    SoapException.ServerFaultCode, "BBCinema",
+                    GetSoapExceptionDesc("Invalid session id entered in AddReservation operation"));
             try
             {
-                int roomCapacity = CinemaModel.Current.GetRoomCapacity(sessionId);
-                if (roomCapacity == -1)
-                    throw new SoapException("SessionID not Valid",
-                        SoapException.ServerFaultCode, "BBCinema",
-                        GetSoapExceptionDesc("Invalid session id entered in AddReservation operation"));
-
                 int sessionReservations = Server.GetTotalReservations(sessionId);
-
                 if ((sessionReservations + seats) <= roomCapacity && roomCapacity > 0)
                     return Server.AddReservation(name, sessionId, seats);
             }
@@ -90,11 +90,13 @@ namespace WSCinema
                 throw new SoapException("Reservation Server down",
                        SoapException.ServerFaultCode, "BBCinema",
                        GetSoapExceptionDesc("No reservation capabilities possible."));
+
             }
             return Guid.Empty;
         }
 
-        [WebMethod(Description = "Removes the reservation with the given Guid")]
+        [WebMethod(Description = "Removes the reservation with the given Guid.\n" +
+            "Throws SoapException if reservation server is down.")]
         public bool RemoveReservation(Guid code)
         {
             try
@@ -106,6 +108,7 @@ namespace WSCinema
                 throw new SoapException("Reservation Server down",
                        SoapException.ServerFaultCode, "BBCinema",
                        GetSoapExceptionDesc("No reservation capabilities possible."));
+
             }
         }
         #endregion
@@ -114,7 +117,7 @@ namespace WSCinema
         {
             XmlDocument doc = new XmlDocument();
             XmlNode node = doc.CreateNode(XmlNodeType.Element, SoapException.DetailElementName.Name, SoapException.DetailElementName.Namespace);
-            XmlNode child = doc.CreateNode(XmlNodeType.Element, "error", "http://sd.isel.pt/");
+            XmlNode child = doc.CreateNode(XmlNodeType.Element, "error", "http://sd.deetc.isel.pt/");
             child.InnerText = "BBCinemaService:" + content;
             node.AppendChild(child);
             return node;
