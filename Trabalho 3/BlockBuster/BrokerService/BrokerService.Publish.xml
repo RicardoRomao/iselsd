@@ -1,0 +1,13 @@
+<publishData>
+  <publishTarget publishUrl="C:\Users\Nemesis\Documents\ISEL\Semestre 06\SD\Trabalhos\Trabalho03\WSBroker\">
+    <file relUrl="bin/BrokerModel.dll" publishTime="06/03/2010 16:44:52" />
+    <file relUrl="bin/BrokerService.dll" publishTime="06/03/2010 17:41:52" />
+    <file relUrl="bin/BrokerModel.pdb" publishTime="06/03/2010 16:44:52" />
+    <file relUrl="WSBroker.asmx" publishTime="06/03/2010 15:31:46" />
+    <file relUrl="cinemas.xml" publishTime="06/03/2010 16:48:05" />
+    <file relUrl="Web.config" publishTime="06/03/2010 17:41:49" />
+    <file relUrl="bin/BrokerService.pdb" publishTime="06/03/2010 17:41:52" />
+    <file relUrl="bin/BrokerDAL.pdb" publishTime="06/03/2010 17:41:52" />
+    <file relUrl="bin/BrokerDAL.dll" publishTime="06/03/2010 17:41:52" />
+  </publishTarget>
+</publishData>

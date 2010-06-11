@@ -5,37 +5,33 @@ using System.Text;
 using Entities;
 using System.Configuration;
 using System.Xml.Linq;
+using Entities;
 
 namespace Model
 {
-    public class CinemaModel
+    public sealed class CinemaModel
     {
+        static Object _monitor = new Object();
         static readonly string _source = ConfigurationSettings.AppSettings["datasource"];
-        
+
         private Dictionary<int, Movie> _movies;
         private Dictionary<int, Room> _rooms;
         private Dictionary<string, MovieSession> _sessions;
 
-        private static CinemaModel current;
+        private static readonly CinemaModel _current = new CinemaModel();
 
-        public static CinemaModel Current
-        {
-            get
-            {
-                if (current == null)
-                    current = new CinemaModel();
-                return current;
-            }
-        }
+        public static CinemaModel Current { get { return _current; } }
 
         private CinemaModel() { Init(); }
 
         #region Private Operations
         private void Init()
         {
-            XDocument doc = XDocument.Load(_source, LoadOptions.None);
-
-            LoadRooms(doc).LoadSessions(doc).LoadMovies(doc);
+            lock (_monitor)
+            {
+                XDocument doc = XDocument.Load(_source, LoadOptions.None);
+                LoadRooms(doc).LoadSessions(doc).LoadMovies(doc);
+            }
 
             foreach (MovieSession s in _sessions.Values)
             {
@@ -108,6 +104,7 @@ namespace Model
         //Returns movies that contain at least one of the keywords provided
         public IEnumerable<Movie> GetMovies(List<String> keywords)
         {
+            Init();
             if (keywords == null) return _movies.Values;
             keywords = keywords.ConvertAll(s => s.ToUpper());
             return _movies.Values.Where(m => m.Title.ToUpper().Split(' ').Any(
@@ -115,11 +112,15 @@ namespace Model
         }
 
         //Returns all movies appearing in this cinema
-        public IEnumerable<Movie> GetMovies() { return GetMovies(null); }
+        public IEnumerable<Movie> GetMovies() {
+            Init();
+            return GetMovies(null); 
+        }
 
         //Returns movies that have sessions within the given period
         public IEnumerable<Movie> GetMovies(DateTime startTime, DateTime endTime)
         {
+            Init();
             return _movies.Values.Where(m =>
                     m.Sessions != null && m.Sessions.Any(s =>
                         s.StartTime.CompareTo(startTime) >= 0 &&

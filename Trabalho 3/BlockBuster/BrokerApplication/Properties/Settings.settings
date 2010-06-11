@@ -2,8 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="BrokerApplication.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="BrokerApplication_sd_deetc_isel_pt_WSBroker" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://localhost/WSBroker/WSBroker.asmx</Value>
+    <Setting Name="BrokerApplication_BlockBusterBroker_WSBroker" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://localhost:49162/WSBroker.asmx</Value>
     </Setting>
   </Settings>
 </SettingsFile>

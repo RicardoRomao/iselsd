@@ -26,10 +26,10 @@ namespace BrokerApplication.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost/WSBroker/WSBroker.asmx")]
-        public string BrokerApplication_sd_deetc_isel_pt_WSBroker {
+        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:49162/WSBroker.asmx")]
+        public string BrokerApplication_BlockBusterBroker_WSBroker {
             get {
-                return ((string)(this["BrokerApplication_sd_deetc_isel_pt_WSBroker"]));
+                return ((string)(this["BrokerApplication_BlockBusterBroker_WSBroker"]));
             }
         }
     }
