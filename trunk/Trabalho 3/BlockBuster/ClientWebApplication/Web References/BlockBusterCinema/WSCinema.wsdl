@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://sd.deetc.isel.pt/" xmlns:s1="http://microsoft.com/wsdl/types/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://sd.deetc.isel.pt/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://sd.deetc.isel.pt/">
+      <s:import namespace="http://microsoft.com/wsdl/types/" />
+      <s:element name="GetMovies">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetMoviesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetMoviesResult" type="tns:ArrayOfMovie" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfMovie">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Movie" nillable="true" type="tns:Movie" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Movie">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Id" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Title" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Desc" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Sessions" type="tns:ArrayOfMovieSession" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfMovieSession">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="MovieSession" nillable="true" type="tns:MovieSession" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="MovieSession">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Id" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="StartTime" type="s:dateTime" />
+          <s:element minOccurs="1" maxOccurs="1" name="MovieId" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="RoomId" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Room" type="tns:Room" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Room">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Num" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="Capacity" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetMoviesByTitle">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="keyWords" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetMoviesByTitleResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetMoviesByTitleResult" type="tns:ArrayOfMovie" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetMoviesByPeriod">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="start" type="s:dateTime" />
+            <s:element minOccurs="1" maxOccurs="1" name="end" type="s:dateTime" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetMoviesByPeriodResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetMoviesByPeriodResult" type="tns:ArrayOfMovie" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddReservation">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="sessionId" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="seats" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddReservationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="AddReservationResult" type="s1:guid" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RemoveReservation">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="code" type="s1:guid" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RemoveReservationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RemoveReservationResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://microsoft.com/wsdl/types/">
+      <s:simpleType name="guid">
+        <s:restriction base="s:string">
+          <s:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}" />
+        </s:restriction>
+      </s:simpleType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetMoviesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetMovies" />
+  </wsdl:message>
+  <wsdl:message name="GetMoviesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetMoviesResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMoviesByTitleSoapIn">
+    <wsdl:part name="parameters" element="tns:GetMoviesByTitle" />
+  </wsdl:message>
+  <wsdl:message name="GetMoviesByTitleSoapOut">
+    <wsdl:part name="parameters" element="tns:GetMoviesByTitleResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMoviesByPeriodSoapIn">
+    <wsdl:part name="parameters" element="tns:GetMoviesByPeriod" />
+  </wsdl:message>
+  <wsdl:message name="GetMoviesByPeriodSoapOut">
+    <wsdl:part name="parameters" element="tns:GetMoviesByPeriodResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddReservationSoapIn">
+    <wsdl:part name="parameters" element="tns:AddReservation" />
+  </wsdl:message>
+  <wsdl:message name="AddReservationSoapOut">
+    <wsdl:part name="parameters" element="tns:AddReservationResponse" />
+  </wsdl:message>
+  <wsdl:message name="RemoveReservationSoapIn">
+    <wsdl:part name="parameters" element="tns:RemoveReservation" />
+  </wsdl:message>
+  <wsdl:message name="RemoveReservationSoapOut">
+    <wsdl:part name="parameters" element="tns:RemoveReservationResponse" />
+  </wsdl:message>
+  <wsdl:portType name="WSCinemaSoap">
+    <wsdl:operation name="GetMovies">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns all movies in the cinema</wsdl:documentation>
+      <wsdl:input message="tns:GetMoviesSoapIn" />
+      <wsdl:output message="tns:GetMoviesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMoviesByTitle">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns all movies whose titles match the keywords</wsdl:documentation>
+      <wsdl:input message="tns:GetMoviesByTitleSoapIn" />
+      <wsdl:output message="tns:GetMoviesByTitleSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMoviesByPeriod">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Returns all movies with sessions within the period</wsdl:documentation>
+      <wsdl:input message="tns:GetMoviesByPeriodSoapIn" />
+      <wsdl:output message="tns:GetMoviesByPeriodSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AddReservation">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Adds a reservation to a movie session.
+Returns an empty Guid if no more seats are available.
+Throws SoapException if sessionId is invalid or reservation server is down.</wsdl:documentation>
+      <wsdl:input message="tns:AddReservationSoapIn" />
+      <wsdl:output message="tns:AddReservationSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RemoveReservation">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Removes the reservation with the given Guid.
+Throws SoapException if reservation server is down.</wsdl:documentation>
+      <wsdl:input message="tns:RemoveReservationSoapIn" />
+      <wsdl:output message="tns:RemoveReservationSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WSCinemaSoap" type="tns:WSCinemaSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetMovies">
+      <soap:operation soapAction="http://sd.deetc.isel.pt/GetMovies" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMoviesByTitle">
+      <soap:operation soapAction="http://sd.deetc.isel.pt/GetMoviesByTitle" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMoviesByPeriod">
+      <soap:operation soapAction="http://sd.deetc.isel.pt/GetMoviesByPeriod" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddReservation">
+      <soap:operation soapAction="http://sd.deetc.isel.pt/AddReservation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RemoveReservation">
+      <soap:operation soapAction="http://sd.deetc.isel.pt/RemoveReservation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WSCinemaSoap12" type="tns:WSCinemaSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetMovies">
+      <soap12:operation soapAction="http://sd.deetc.isel.pt/GetMovies" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMoviesByTitle">
+      <soap12:operation soapAction="http://sd.deetc.isel.pt/GetMoviesByTitle" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMoviesByPeriod">
+      <soap12:operation soapAction="http://sd.deetc.isel.pt/GetMoviesByPeriod" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddReservation">
+      <soap12:operation soapAction="http://sd.deetc.isel.pt/AddReservation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RemoveReservation">
+      <soap12:operation soapAction="http://sd.deetc.isel.pt/RemoveReservation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WSCinema">
+    <wsdl:port name="WSCinemaSoap" binding="tns:WSCinemaSoap">
+      <soap:address location="http://localhost:3354/WSCinema.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WSCinemaSoap12" binding="tns:WSCinemaSoap12">
+      <soap12:address location="http://localhost:3354/WSCinema.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
