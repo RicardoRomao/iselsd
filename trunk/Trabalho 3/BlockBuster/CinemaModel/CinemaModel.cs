@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Entities;
 using System.Configuration;
 using System.Xml.Linq;
-using Entities;
 
 namespace Model
 {
