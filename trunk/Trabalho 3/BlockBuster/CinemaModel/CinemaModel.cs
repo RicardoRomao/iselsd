@@ -4,10 +4,11 @@ using System.Linq;
 using Entities;
 using System.Configuration;
 using System.Xml.Linq;
+using Entities.Interfaces;
 
 namespace Model
 {
-    public sealed class CinemaModel
+    public sealed class CinemaModel : ICinemaModel
     {
         static Object _monitor = new Object();
         static readonly string _source = ConfigurationSettings.AppSettings["datasource"];
@@ -98,7 +99,7 @@ namespace Model
         }
         #endregion
 
-        #region Public Operations
+        #region ICinemaModel Members
         //Returns movies that contain at least one of the keywords provided
         public IEnumerable<Movie> GetMovies(List<String> keywords)
         {
