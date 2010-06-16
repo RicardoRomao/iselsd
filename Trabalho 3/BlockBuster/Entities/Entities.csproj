@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Concrete\CinemaRegistry.cs" />
     <Compile Include="Interfaces\IBrokerRegistryServer.cs" />
+    <Compile Include="Interfaces\ICinemaModel.cs" />
     <Compile Include="Interfaces\ICinemaReservationServer.cs" />
     <Compile Include="Interfaces\IWSBroker.cs" />
     <Compile Include="Interfaces\IWSCinema.cs" />
