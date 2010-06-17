@@ -49,9 +49,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Showtime.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Entities\Entities.csproj">
       <Project>{24F774BC-5054-4261-B459-A7CFF1CE7697}</Project>
       <Name>Entities</Name>
@@ -59,6 +56,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Showtime.xsd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Showtime - BBC.xml" />
+    <Content Include="Showtime - BBS.xml" />
+    <Content Include="Showtime - BBZ.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

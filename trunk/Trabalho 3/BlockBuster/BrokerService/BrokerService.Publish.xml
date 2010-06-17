@@ -1,4 +1,12 @@
 <publishData>
+  <publishTarget publishUrl="c:\Web\BlockBusterBroker\">
+    <file relUrl="bin/Entities.pdb" publishTime="06/16/2010 13:20:19" />
+    <file relUrl="bin/Entities.dll" publishTime="06/16/2010 13:20:20" />
+    <file relUrl="bin/BrokerService.pdb" publishTime="06/16/2010 13:20:37" />
+    <file relUrl="WSBroker.asmx" publishTime="06/07/2010 09:16:38" />
+    <file relUrl="bin/BrokerService.dll" publishTime="06/16/2010 13:20:37" />
+    <file relUrl="Web.config" publishTime="06/10/2010 16:29:15" />
+  </publishTarget>
   <publishTarget publishUrl="C:\Users\Nemesis\Documents\ISEL\Semestre 06\SD\Trabalhos\Trabalho03\WSBroker\">
     <file relUrl="bin/BrokerModel.dll" publishTime="06/03/2010 16:44:52" />
     <file relUrl="bin/BrokerService.dll" publishTime="06/03/2010 17:41:52" />

@@ -12,7 +12,7 @@ namespace CinemaReservationServer
 
         public static void Main(String[] args)
         {
-            Console.WriteLine(".: Starting Cinema Reservation Server :.");
+            Console.WriteLine(".: {0} :.",ConfigurationManager.AppSettings["serverName"]);
             RemotingConfiguration.Configure(
                 AppDomain.CurrentDomain.SetupInformation.ConfigurationFile,
                 false
