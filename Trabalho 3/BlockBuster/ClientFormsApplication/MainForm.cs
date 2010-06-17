@@ -15,7 +15,7 @@ namespace ClientFormsApplication
     public partial class MainForm : Form
     {
         private readonly Object _monitor = new Object();
-        private Coordinator _coord;
+        private ICoordinator _coord;
 
         public MainForm()
         {

@@ -17,5 +17,10 @@ namespace ClientFormsApplication
         event ReservationProcessedDelegate AddReservationProcessed;
         event ReservationProcessedDelegate RemoveReservationProcessed;
 
+        void GetMovies();
+        void GetMovies(String keywords);
+        void GetMovies(DateTime start, DateTime end);
+        void SendReservation(SessionInfo resInfo);
+        void RemoveReservation(SessionInfo resInfo);
     }
 }

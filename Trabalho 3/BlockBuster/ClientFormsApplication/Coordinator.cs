@@ -39,6 +39,50 @@ namespace ClientFormsApplication
         public event ErrorOccuredDelegate ErrorOccured;
         public event ReservationProcessedDelegate AddReservationProcessed;
         public event ReservationProcessedDelegate RemoveReservationProcessed;
+
+        public void GetMovies()
+        {
+            foreach (KeyValuePair<string, CinemaInfo> kv in _registry)
+            {
+                _cinema.Url = kv.Value.Url;
+                _cinema.GetMoviesAsync(kv.Key);
+            }
+        }
+
+        public void GetMovies(String keywords)
+        {
+            foreach (KeyValuePair<string, CinemaInfo> kv in _registry)
+            {
+                _cinema.Url = kv.Value.Url;
+                _cinema.GetMoviesByTitleAsync(keywords.Split(' '), kv.Key);
+            }
+        }
+
+        public void GetMovies(DateTime start, DateTime end)
+        {
+            foreach (KeyValuePair<string, CinemaInfo> kv in _registry)
+            {
+                _cinema.Url = kv.Value.Url;
+                _cinema.GetMoviesByPeriodAsync(start, end, kv.Key);
+            }
+        }
+
+        public void SendReservation(SessionInfo resInfo)
+        {
+            _cinema.Url = _registry[resInfo.Cinema].Url;
+            _cinema.AddReservationAsync(
+                resInfo.Name,
+                resInfo.SessionID,
+                resInfo.Seats,
+                resInfo
+            );
+        }
+
+        public void RemoveReservation(SessionInfo resInfo)
+        {
+            _cinema.Url = _registry[resInfo.Cinema].Url;
+            _cinema.RemoveReservationAsync(resInfo.Code, resInfo);
+        }
         #endregion
 
         #region Broker Async Callbacks
@@ -94,61 +138,38 @@ namespace ClientFormsApplication
         void Cinema_AddReservationCompleted(object sender, AddReservationCompletedEventArgs e)
         {
             SessionInfo resInfo = (SessionInfo)e.UserState;
-            resInfo.Code = e.Result;
-            if (AddReservationProcessed != null)
-                AddReservationProcessed(resInfo);
+            try
+            {
+                resInfo.Code = e.Result;
+                if (AddReservationProcessed != null)
+                    AddReservationProcessed(resInfo);
+            }
+            catch (Exception)
+            {
+                if (ErrorOccured != null)
+                {
+                    ErrorOccured(resInfo.Cinema + " - Reservation server is down.");
+                }
+            }
         }
 
         void Cinema_RemoveReservationCompleted(object sender, RemoveReservationCompletedEventArgs e)
         {
             SessionInfo resInfo = (SessionInfo)e.UserState;
-            if (RemoveReservationProcessed != null)
-                RemoveReservationProcessed(resInfo);
+            try
+            {
+                if (RemoveReservationProcessed != null)
+                    RemoveReservationProcessed(resInfo);
+            }
+            catch (Exception)
+            {
+                if (ErrorOccured != null)
+                {
+                    ErrorOccured(resInfo.Cinema + " - Reservation server is down.");
+                }
+            }
         }
         #endregion
 
-        public void GetMovies()
-        {
-            foreach (KeyValuePair<string, CinemaInfo> kv in _registry)
-            {
-                _cinema.Url = kv.Value.Url;
-                _cinema.GetMoviesAsync(kv.Key);
-            }
-        }
-
-        public void GetMovies(String keywords)
-        {
-            foreach (KeyValuePair<string, CinemaInfo> kv in _registry)
-            {
-                _cinema.Url = kv.Value.Url;
-                _cinema.GetMoviesByTitleAsync(keywords.Split(' '), kv.Key);
-            }
-        }
-
-        public void GetMovies(DateTime start, DateTime end)
-        {
-            foreach (KeyValuePair<string, CinemaInfo> kv in _registry)
-            {
-                _cinema.Url = kv.Value.Url;
-                _cinema.GetMoviesByPeriodAsync(start, end, kv.Key);
-            }
-        }
-
-        public void SendReservation(SessionInfo resInfo)
-        {
-            _cinema.Url = _registry[resInfo.Cinema].Url;
-            _cinema.AddReservationAsync(
-                resInfo.Name,
-                resInfo.SessionID,
-                resInfo.Seats,
-                resInfo
-            );
-        }
-
-        public void RemoveReservation(SessionInfo resInfo)
-        {
-            _cinema.Url = _registry[resInfo.Cinema].Url;
-            _cinema.RemoveReservationAsync(resInfo.Code, resInfo);
-        }
     }
 }
