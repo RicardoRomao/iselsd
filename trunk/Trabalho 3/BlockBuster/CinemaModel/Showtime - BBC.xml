@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contents xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Showtime.xsd">
+	<rooms>
+		<room id="1" capacity="10"/>
+		<room id="2" capacity="20"/>
+		<room id="3" capacity="30"/>
+	</rooms>
+	<movies>
+		<movie id="1" title="A Ilha de Impy">
+		  Titiwoo é uma pequena ilha vulcânica no meio do oceano. É aqui que o, pretenso homem da Renascença, zoólogo e cientista indisciplinado, Professor Horatio Tiberton vive e trabalha. Juntamente com o filho adoptado do professor, Tim, um ilustre bando de criaturas da ilha assiste à escola idiossincrásica de línguas de Tibberton: Ping, o pinguim; Monty, o lagarto monitor; Shoe, o pássaro e Solomon, o elefante-marinho. A dona da casa e da escola de Tibberton é Peg, a senhora-porca. A vida é feliz para todos os habitantes da ilha. Até que, um dia, um iceberg que tem lá dentro ovos pré-históricos congelados dá à costa e, dos ovos emerge uma estranha criatura verde: é Impy, um dinossauro da idade do gelo. A partir deste momento, a pacata vida dos habitantes da ilha acaba. Quando as novidades sobre Impy chegam ao Rei Pumponnel, que baniu Tibberton para os Mares do Sul, ele faz-se à vela imediatamente, determinado a caçar Impy e adicioná-lo à sua colecção de troféus. Mas Pumponell não conta com os habitantes e as criaturas de Titiwoo. É nessa altura que começa uma perigosa caçada, na qual o grupo de amigos de Tibberton luta para salvar Impy da mira de Pumponell a qualquer custo.
+		</movie>
+		<movie id="2" title="Como Treinares o Teu Dragão">
+		  "Como Treinares o Teu Dragão" passa-se num mundo cheio de Vikings musculados e dragões selvagens. Um adolescente esquelético e desajeitado, filho de Viking, decide matar um dragão para se tornar um herói, provando o seu valor à tribo e ao pai. Mas quando ele se torna amigo do dragão o seu mundo vira-se de cabeça para baixo.
+		</movie>
+		<movie id="3" title="A Princesa e o Sapo">
+		  Uma comédia passada na cidade de Nova Orleães, dos criadores da "A Pequena Sereia" e "Aladin", que é uma versão moderna de um conto clássico, que conta com uma rapariga chamada Tiana, um príncipe sapo que tenta desesperadamente voltar a ser humano e um beijo fatídico que os levará numa hilariante aventura através dos fascinantes riachos do Louisiana.
+		</movie>
+	</movies>
+	<sessions>
+		<session id="14H-R1" startTime="14:00:00" movieId="1" roomId="1"/>
+		<session id="14H-R2" startTime="14:30:00" movieId="2" roomId="2"/>
+		<session id="14H-R3" startTime="14:45:00" movieId="3" roomId="3"/>
+		<session id="16H-R1" startTime="16:30:00" movieId="1" roomId="1"/>
+		<session id="16H-R2" startTime="16:45:00" movieId="2" roomId="2"/>
+		<session id="16H-R3" startTime="16:50:00" movieId="3" roomId="3"/>
+		<session id="19H-R1" startTime="19:00:00" movieId="3" roomId="1"/>
+		<session id="19H-R2" startTime="19:00:00" movieId="3" roomId="2"/>
+		<session id="19H-R3" startTime="19:00:00" movieId="3" roomId="3"/>
+	</sessions>
+</contents>

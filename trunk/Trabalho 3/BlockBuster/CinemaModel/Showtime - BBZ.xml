@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contents xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Showtime.xsd">
+	<rooms>
+		<room id="1" capacity="4"/>
+		<room id="2" capacity="5"/>
+		<room id="3" capacity="6"/>
+	</rooms>
+	<movies>
+		<movie id="1" title="Astro Boy">
+		  Passado no cenário futurista de Metro City, «Astro Boy» é um filme sobre um jovem robot com poderes extraordinários, criado por um cientista. Alimentado pela energia positiva "azul", Astro Boy possui uma força hercúlea, visão raio-x, velocidade inacreditável e capacidade para voar. Numa viagem em busca da aceitação, Astro Boy vai aprender as alegrias e emoções de ser humano e ganhar força para abraçar o seu destino. Quando descobre que os seus amigos e família estão em perigo, Astro Boy reúne todos os seus super poderes e regressa a Metro City, esforçando-se corajosamente para salvar tudo aquilo que é mais precioso para si e, ao mesmo tempo, perceber o que é necessário para ser um herói.
+		</movie>
+		<movie id="2" title="Um Funeral à Chuva">
+		  Um grupo de antigos estudantes universitários reencontra-se na cidade onde havia estudado, devido à morte de um deles. Na obrigação de satisfazer o último desejo deste, o grupo inicia uma jornada de auto-descoberta sobre a essência da amizade verdadeira. Contudo, há dez anos que não se viam...
+		</movie>
+		<movie id="3" title="Toy Story 1 - Os Rivais">
+		  Eles são brinquedos, eles falam – pelo menos quando não há pessoas à sua volta – e estão de volta… Woody, alto e magro, um cowboy de quem todos gostam, e Buzzlightyear, o destemido ranger do espaço. A dupla comicamente dissonante aprende, finalmente, a pôr de lado as suas diferenças, quando o destino os separa do seu dono Andy, e se encontram numa missão hilariante, recheada de aventura, onde a única forma de sobrevivência passa por formar uma incómoda aliança.
+		</movie>
+	</movies>
+	<sessions>
+		<session id="11H-R1" startTime="11:00:00" movieId="1" roomId="1"/>
+		<session id="11H-R2" startTime="11:30:00" movieId="2" roomId="2"/>
+		<session id="11H-R3" startTime="11:45:00" movieId="3" roomId="3"/>
+		<session id="13H-R1" startTime="13:30:00" movieId="1" roomId="1"/>
+		<session id="13H-R2" startTime="13:45:00" movieId="2" roomId="2"/>
+		<session id="13H-R3" startTime="13:50:00" movieId="3" roomId="3"/>
+		<session id="15H-R1" startTime="15:00:00" movieId="1" roomId="1"/>
+		<session id="15H-R2" startTime="15:00:00" movieId="3" roomId="2"/>
+		<session id="15H-R3" startTime="15:00:00" movieId="3" roomId="3"/>
+	</sessions>
+</contents>
