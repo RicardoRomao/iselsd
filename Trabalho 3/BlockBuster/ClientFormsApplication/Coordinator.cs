@@ -88,22 +88,21 @@ namespace ClientFormsApplication
         #region Broker Async Callbacks
         void Broker_GetCinemasCompleted(object sender, GetCinemasCompletedEventArgs e)
         {
-            try
-            {
-                List<CinemaRegistry> cinemas = e.Result.ToList();
-                foreach (CinemaRegistry c in cinemas)
-                {
-                    _registry.Add(c.Name, new CinemaInfo { Url = c.Url });
-                }
-            }
-            catch (Exception ex)
+            if (e.Error != null)
             {
                 if (ErrorOccured != null)
                 {
                     ErrorOccured("BBBroker - Registry server is down.");
+                    return;
                 }
+                else
+                    throw e.Error;
             }
-
+            List<CinemaRegistry> cinemas = e.Result.ToList();
+            foreach (CinemaRegistry c in cinemas)
+            {
+                _registry.Add(c.Name, new CinemaInfo { Url = c.Url });
+            }
         }
         #endregion
 
@@ -138,36 +137,36 @@ namespace ClientFormsApplication
         void Cinema_AddReservationCompleted(object sender, AddReservationCompletedEventArgs e)
         {
             SessionInfo resInfo = (SessionInfo)e.UserState;
-            try
-            {
-                resInfo.Code = e.Result;
-                if (AddReservationProcessed != null)
-                    AddReservationProcessed(resInfo);
-            }
-            catch (Exception)
+            if (e.Error != null)
             {
                 if (ErrorOccured != null)
                 {
                     ErrorOccured(resInfo.Cinema + " - Reservation server is down.");
+                    return;
                 }
+                else
+                    throw e.Error;
             }
+            resInfo.Code = e.Result;
+            if (AddReservationProcessed != null)
+                AddReservationProcessed(resInfo);
         }
 
         void Cinema_RemoveReservationCompleted(object sender, RemoveReservationCompletedEventArgs e)
         {
             SessionInfo resInfo = (SessionInfo)e.UserState;
-            try
-            {
-                if (RemoveReservationProcessed != null)
-                    RemoveReservationProcessed(resInfo);
-            }
-            catch (Exception)
+            if (e.Error != null)
             {
                 if (ErrorOccured != null)
                 {
                     ErrorOccured(resInfo.Cinema + " - Reservation server is down.");
+                    return;
                 }
+                else
+                    throw e.Error;
             }
+            if (RemoveReservationProcessed != null)
+                RemoveReservationProcessed(resInfo);
         }
         #endregion
 
