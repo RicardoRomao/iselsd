@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contents xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Showtime.xsd">
+	<rooms>
+		<room id="1" capacity="40"/>
+		<room id="2" capacity="60"/>
+		<room id="3" capacity="120"/>
+	</rooms>
+	<movies>
+		<movie id="1" title="Pesadelo em Elm Street">
+		  O maior clássico de terror de todos os tempos, está de volta. Mas desta vez é o actor Jackie Earle Haley quem encarna a mítica personagem de chapéu e garras afiadas, Freddy Krueger. A nova história anda à volta dos adolescentes perseguidos por Freddy Krueger, o assassino horrivelmente desfigurado que os aterroriza durante os sonhos.
+		</movie>
+		<movie id="2" title="A Era dos Ignorantes">
+		  Jean-Marc Leblanc (Marc Labrèche) é um homem com uma vida insignificante, desprezado por todos que, sempre que pode, foge da realidade para uma vida cheia de coisas excitantes. Mas estas, infelizmente, apenas existem na sua imaginação. Nos seus sonhos ele é um cavaleiro, uma estrela de rock, um actor de cinema, um escritor célebre. E sempre com um imenso poder sobre o sexo oposto. Um dia, farto de viver uma existência adulterada, decide mudar de atitude e dar uma nova hipótese à sua vida real.
+		</movie>
+		<movie id="3" title="Ex-Mulher Procura-se">
+		  Milo Boyd é um bounty hunter, ou seja, tem como profissão capturar fugitivos à lei em troca de uma recompensa monetária. Um dia, a sua missão é encontrar e prender a repórter Nicole Hurley, a sua ex-mulher... Quando ele pensava que não haveria tarefa mais fácil, Nicole diz-lhe que está a seguir um importante caso de homicídio, e então Milo percebe que as coisas não vão ser bem como ele tinha planeado. A relação de ambos continua na mesma, até ao momento em que têm de se unir se quiserem viver...
+		</movie>
+	</movies>
+	<sessions>
+		<session id="01H-R1" startTime="01:00:00" movieId="1" roomId="1"/>
+		<session id="01H-R2" startTime="01:30:00" movieId="2" roomId="2"/>
+		<session id="01H-R3" startTime="01:45:00" movieId="3" roomId="3"/>
+		<session id="03H-R1" startTime="03:30:00" movieId="1" roomId="1"/>
+		<session id="03H-R2" startTime="03:45:00" movieId="2" roomId="2"/>
+		<session id="03H-R3" startTime="03:50:00" movieId="3" roomId="3"/>
+		<session id="05H-R1" startTime="05:00:00" movieId="2" roomId="1"/>
+		<session id="05H-R2" startTime="05:00:00" movieId="3" roomId="2"/>
+		<session id="05H-R3" startTime="05:00:00" movieId="3" roomId="3"/>
+	</sessions>
+</contents>
