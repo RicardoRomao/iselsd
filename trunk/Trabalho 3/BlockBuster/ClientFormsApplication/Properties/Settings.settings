@@ -6,7 +6,7 @@
       <Value Profile="(Default)">http://localhost:3354/WSCinema.asmx</Value>
     </Setting>
     <Setting Name="ClientFormsApplication_BBBroker_WSBroker" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://localhost:49162/WSBroker.asmx</Value>
+      <Value Profile="(Default)">http://localhost/BBBroker/WSBroker.asmx</Value>
     </Setting>
   </Settings>
 </SettingsFile>

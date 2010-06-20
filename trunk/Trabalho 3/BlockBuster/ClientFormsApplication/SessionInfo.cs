@@ -14,6 +14,7 @@ namespace ClientFormsApplication
         public string Name { get; set; }
         public Guid Code { get; set; }
         public int Seats { get; set; }
+		public int Expires { get; set; }
     }
 
 }

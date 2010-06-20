@@ -96,6 +96,13 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="ReservationHeader" type="tns:ReservationHeader" />
+      <s:complexType name="ReservationHeader">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Days" type="s:int" />
+        </s:sequence>
+        <s:anyAttribute />
+      </s:complexType>
       <s:element name="RemoveReservation">
         <s:complexType>
           <s:sequence>
@@ -142,6 +149,9 @@
   </wsdl:message>
   <wsdl:message name="AddReservationSoapOut">
     <wsdl:part name="parameters" element="tns:AddReservationResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddReservationReservationHeader">
+    <wsdl:part name="ReservationHeader" element="tns:ReservationHeader" />
   </wsdl:message>
   <wsdl:message name="RemoveReservationSoapIn">
     <wsdl:part name="parameters" element="tns:RemoveReservation" />
@@ -215,6 +225,7 @@ Throws SoapException if reservation server is down.</wsdl:documentation>
       </wsdl:input>
       <wsdl:output>
         <soap:body use="literal" />
+        <soap:header message="tns:AddReservationReservationHeader" part="ReservationHeader" use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="RemoveReservation">
@@ -263,6 +274,7 @@ Throws SoapException if reservation server is down.</wsdl:documentation>
       </wsdl:input>
       <wsdl:output>
         <soap12:body use="literal" />
+        <soap12:header message="tns:AddReservationReservationHeader" part="ReservationHeader" use="literal" />
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="RemoveReservation">
