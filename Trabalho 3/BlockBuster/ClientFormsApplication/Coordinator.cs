@@ -136,8 +136,9 @@ namespace ClientFormsApplication
 
         void Cinema_AddReservationCompleted(object sender, AddReservationCompletedEventArgs e)
         {
+			WSCinema ws = sender as WSCinema;
             SessionInfo resInfo = (SessionInfo)e.UserState;
-            if (e.Error != null)
+			if (e.Error != null || ws == null)
             {
                 if (ErrorOccured != null)
                 {
@@ -148,6 +149,7 @@ namespace ClientFormsApplication
                     throw e.Error;
             }
             resInfo.Code = e.Result;
+            resInfo.Expires = ws.ReservationHeaderValue.Days;
             if (AddReservationProcessed != null)
                 AddReservationProcessed(resInfo);
         }

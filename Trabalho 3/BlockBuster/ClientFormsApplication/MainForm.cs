@@ -108,6 +108,10 @@ namespace ClientFormsApplication
                 resNode.Nodes.Add("Start At:\t" + resInfo.StartTime.TimeOfDay);
 
                 cinemaNode.Nodes.Add(resNode);
+				MessageBox.Show(String.Format("Your reservation expires in {0} day{1}.", resInfo.Expires, (resInfo.Expires>1)?"s":""), 
+								"AddReservation", 
+								MessageBoxButtons.OK, 
+								MessageBoxIcon.Information);
             }
             else
             {

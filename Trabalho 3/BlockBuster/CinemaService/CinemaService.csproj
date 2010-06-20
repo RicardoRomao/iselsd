@@ -72,6 +72,10 @@
       <Project>{24F774BC-5054-4261-B459-A7CFF1CE7697}</Project>
       <Name>Entities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Headers\Headers.csproj">
+      <Project>{AD9109EF-2DB2-4CDA-B53A-D721581CC4D8}</Project>
+      <Name>Headers</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

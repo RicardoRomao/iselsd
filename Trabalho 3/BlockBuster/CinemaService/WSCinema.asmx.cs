@@ -8,6 +8,7 @@ using Entities;
 using System.Web.Services.Protocols;
 using System.Xml;
 using System.Net.Sockets;
+using Headers;
 
 namespace WSCinema
 {
@@ -22,6 +23,7 @@ namespace WSCinema
     {
         private readonly Object _monitor = new Object();
         private ICinemaReservationServer _server;
+        public ReservationHeader _reservationHeader = new ReservationHeader();
 
         private new ICinemaReservationServer Server
         {
@@ -72,8 +74,10 @@ namespace WSCinema
             "Returns an empty Guid if no more seats are available.\n" +
             "Throws SoapException if sessionId is invalid or " +
             "reservation server is down.")]
+		[SoapHeader("_reservationHeader", Direction = SoapHeaderDirection.Out)]
         public Guid AddReservation(string name, string sessionId, int seats)
         {
+			Guid res = Guid.Empty;
             int roomCapacity = CinemaModel.Current.GetRoomCapacity(sessionId);
             if (roomCapacity == -1)
                 throw new SoapException("SessionID not Valid",
@@ -83,16 +87,19 @@ namespace WSCinema
             {
                 int sessionReservations = Server.GetTotalReservations(sessionId);
                 if ((sessionReservations + seats) <= roomCapacity && roomCapacity > 0)
-                    return Server.AddReservation(name, sessionId, seats);
+                res = Server.AddReservation(name, sessionId, seats);
+                if (!res.Equals(Guid.Empty))
+                {
+					_reservationHeader.Days = (new Random()).Next(1, 3);
+                }
+                return res;
             }
             catch (SocketException)
             {
                 throw new SoapException("Reservation Server down",
                        SoapException.ServerFaultCode, "BBCinema",
                        GetSoapExceptionDesc("No reservation capabilities possible."));
-
             }
-            return Guid.Empty;
         }
 
         [WebMethod(Description = "Removes the reservation with the given Guid.\n" +
